@@ -10,13 +10,24 @@ public class StartscreenManager : UIManager
     [SerializeField]private Button joinButton;
     [SerializeField]private Button aboutButton;
 
-    private void Awake()
+    protected override void Awake()
     {
         if(singleton != null && singleton != this)
             Destroy(this.gameObject);
         singleton = this;
-
         this.screenType = ScreenType.STARTSCREEN;
+
+        base.Awake();
+    }
+
+    protected override void SetScreenForMobile()
+    {
+        this.startButton.gameObject.SetActive(false);
+    }
+
+    protected override void SetScreenForComputer()
+    {
+        this.joinButton.gameObject.SetActive(false);
     }
 
     protected override void OnScreenEnabled()
