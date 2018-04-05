@@ -38,5 +38,21 @@ public class NetworkController : Photon.PunBehaviour
     public override void OnJoinedRoom()
     {
         UIController.singleton.GoToScreen(ScreenType.LOBBYSCREEN);
+        if(PhotonNetwork.isMasterClient)
+            return;
+
+        NetworkPlayer.singleton.Name = JoinscreenManager.singleton.Name;
+    }
+
+    public override void OnPhotonJoinRoomFailed(object[] codeAndMsg)
+    {
+        string error = "Failed to join room.";
+        if(codeAndMsg != null)
+        {
+            short code = (short)codeAndMsg[0];
+            if(code == 32758)
+                error = "This room does not exist.";
+        }
+        JoinscreenManager.singleton.SetFeedback(error);
     }
 }

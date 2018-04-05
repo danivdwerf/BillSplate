@@ -17,7 +17,7 @@ public abstract class UIManager : MonoBehaviour
 	}
 	private void OnEnable() 
 	{
-		UIController.onScreenChanged += this.OnScreenChanged;	
+		UIController.onScreenChanged += this.OnScreenChanged;
 	}
 
 	private void OnScreenChanged(ScreenType screen)

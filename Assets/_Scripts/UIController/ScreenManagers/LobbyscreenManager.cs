@@ -7,21 +7,55 @@ public class LobbyscreenManager : UIManager
 {
     public static LobbyscreenManager singleton;
 
+    [Header("Computer layout ")]
     [SerializeField] private GameObject iconPrefab;
     [SerializeField] private GameObject wheel;
-    [SerializeField]private List<GameObject> iconHolders;
+    private List<GameObject> iconHolders;
 
-    private void Awake()
+    [Space(10)]
+
+    [Header("Mobile layout")]
+    [SerializeField] private Text feedback;
+
+    private int amountOfPlayers;
+
+    protected override void Awake()
     {
         if(singleton != null && singleton != this)
             Destroy(this.gameObject);
         singleton = this;
+
+        base.Awake();
     }
 
     private void Start() 
     {
-        this.iconHolders = new List<GameObject>(Data.MAX_PLAYERS);
+        amountOfPlayers = 0;
+    }
+
+    protected override void OnScreenEnabled()
+    {
+        
+    }
+
+    protected override void SetScreenForComputer()
+    {
+        feedback.gameObject.SetActive(false);
+        feedback = null;
+
+        wheel.SetActive(true);
+        iconHolders = new List<GameObject>(Data.MAX_PLAYERS);
         this.CreateIconHolders();
+    }
+
+    protected override void SetScreenForMobile()
+    {
+        iconPrefab = null;
+        wheel.gameObject.SetActive(false);
+        wheel = null;
+        iconHolders = null;
+
+        feedback.text = "Waiting on the host...";
     }
 
     private void CreateIconHolders()
@@ -44,12 +78,6 @@ public class LobbyscreenManager : UIManager
         }
     }
 
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-            this.ShowIcon();
-    }
-
     public void ShowIcon()
     {
         if(this.iconHolders.Count <= 0)
@@ -60,21 +88,13 @@ public class LobbyscreenManager : UIManager
 
         GameObject textObject = holder.transform.GetChild(0).gameObject;
         Text text = textObject.GetComponent<Text>();
-        text.text = NetworkPlayer.singleton.Name;
+        text.text = "user";
         text.color = Color.white;
-        textObject.transform.localPosition = new Vector3(0.0f, 50.0f, 0.0f);
-        
-        Object[] icons = Data.PLAYER_ICONS;
-        Sprite icon = (Sprite)icons[0];
+        textObject.GetComponent<Transitions.MoveTo>().Move(null);
 
         GameObject iconObject = holder.transform.GetChild(1).gameObject;
-        iconObject.GetComponent<Image>().sprite = icon;
+        iconObject.GetComponent<Image>().sprite = null;
         iconObject.SetActive(true);
-    }
-
-    protected override void OnScreenEnabled()
-    {
-        
     }
 
     protected override void OnScreenDisabled()

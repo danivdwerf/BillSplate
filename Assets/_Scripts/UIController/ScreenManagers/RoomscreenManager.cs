@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+using System.Text.RegularExpressions;
 public class RoomscreenManager : UIManager 
 {
     public static RoomscreenManager singleton;
@@ -9,12 +10,14 @@ public class RoomscreenManager : UIManager
     [SerializeField]private Button createRoomButton;
     [SerializeField]private Text feedback;
     
-    private void Awake()
+    protected override void Awake()
     {
         if(singleton != null && singleton != this)
             Destroy(this.gameObject);
         singleton = this;
         this.screenType = ScreenType.CREATEROOMSCREEN;
+
+        base.Awake();
     }
 
     protected override void OnScreenEnabled()
@@ -46,7 +49,7 @@ public class RoomscreenManager : UIManager
             return false;
         }
 
-        if(roomName.Validate(@"^[a-zA-Z0-9]$"))
+        if(!roomName.Validate(new Regex(@"^[A-Za-z0-9]+$")))
         {
             this.SetFeedback("Roomname may only contain lowercase letters, capital letters and numbers");
             return false;
