@@ -7,9 +7,13 @@ public class LobbyscreenManager : UIManager
 {
     public static LobbyscreenManager singleton;
 
+    [Header("Joined players")]
     [SerializeField] private GameObject iconPrefab;
     [SerializeField] private GameObject wheel;
-    [SerializeField] private GameObject[] icons;
+
+    [Space(10)]
+    [SerializeField] private Text roomCode;
+    private GameObject[] icons;
 
     private void Awake()
     {
@@ -40,6 +44,11 @@ public class LobbyscreenManager : UIManager
 
             this.icons[i] = iconHolder;
         }
+    }
+
+    public void SetRoomcode(string code)
+    {
+        this.roomCode.text = "Roomcode: " + code;
     }
 
     protected override void OnScreenEnabled()

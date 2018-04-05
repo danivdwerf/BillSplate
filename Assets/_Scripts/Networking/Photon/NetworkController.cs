@@ -29,6 +29,7 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnJoinedRoom()
     {
+        LobbyscreenManager.singleton.SetRoomcode(PhotonNetwork.room.Name);
         UIController.singleton.GoToScreen(ScreenType.LOBBYSCREEN);
     }
 }
