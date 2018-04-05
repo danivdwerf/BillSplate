@@ -1,7 +1,7 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+
+using System.Collections;
 using System.Collections.Generic;
-using ExitGames.Client.Photon;
-using UnityEngine;
 
 public class NetworkController : Photon.PunBehaviour
 {
@@ -21,10 +21,18 @@ public class NetworkController : Photon.PunBehaviour
 
     }
 
-    public override void OnPhotonCreateRoomFailed(object[] codeAndMsg)
+    public override void OnPhotonCreateRoomFailed(object[] codeAndMessage)
     {
         UIController.singleton.GoToScreen(ScreenType.CREATEROOMSCREEN);
-        RoomscreenManager.singleton.SetFeedback("Failed to create room.");
+        string error = "Failed to create room.";
+        if(codeAndMessage != null)
+        {
+		    short errorCode = (short)codeAndMessage[0];
+
+		    if(errorCode == 32766)
+			    error = "This roomname is already taken.";
+        }
+		RoomscreenManager.singleton.SetFeedback(error);
     }
 
     public override void OnJoinedRoom()

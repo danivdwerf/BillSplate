@@ -4,6 +4,17 @@ public abstract class UIManager : MonoBehaviour
 {
 	protected ScreenType screenType;
 
+	protected virtual void Awake()
+	{
+
+		#if UNITY_EDITOR
+        this.SetScreenForComputer();
+		#elif UNITY_IOS || UNITY_ANDROID
+        this.SetScreenForMobile();
+        #else
+        this.SetScreenForComputer();
+        #endif
+	}
 	private void OnEnable() 
 	{
 		UIController.onScreenChanged += this.OnScreenChanged;	
@@ -18,6 +29,8 @@ public abstract class UIManager : MonoBehaviour
 	}
 	protected virtual void OnScreenEnabled(){}
 	protected virtual void OnScreenDisabled(){}
+	protected virtual void SetScreenForMobile(){}
+	protected virtual void SetScreenForComputer(){}
 
 	private void OnDisable() 
 	{
