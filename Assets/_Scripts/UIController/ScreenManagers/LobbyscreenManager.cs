@@ -57,7 +57,12 @@ public class LobbyscreenManager : UIManager
         iconHolders = null;
         roomCode.gameObject.SetActive(false);
 
-        feedback.text = "Waiting on the host...";
+        this.SetFeedback("Waiting for the host...");
+    }
+
+    public void SetFeedback(string feedback)
+    {
+        this.feedback.text = feedback;
     }
 
     private void CreateIconHolders()

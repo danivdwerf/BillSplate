@@ -5,10 +5,19 @@ using System.Collections.Generic;
 
 public class NetworkController : Photon.PunBehaviour
 {
+
+    private Host host = null;
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.JoinLobby(TypedLobby.Default);
     }
+
+    public override void OnMasterClientSwitched(PhotonPlayer newMaster)
+	{
+		PhotonNetwork.LeaveRoom();
+		UIController.singleton.GoToScreen(ScreenType.JOINSCREEN);
+		JoinscreenManager.singleton.SetFeedback("The room you were in was closed.");
+	}
 
     public override void OnJoinedLobby()
     {
@@ -18,7 +27,7 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnCreatedRoom()
     {
-
+        this.host = this.gameObject.AddComponent<Host>();
     }
 
     public override void OnPhotonCreateRoomFailed(object[] codeAndMessage)
@@ -35,14 +44,21 @@ public class NetworkController : Photon.PunBehaviour
 		RoomscreenManager.singleton.SetFeedback(error);
     }
 
+    public override void OnPhotonPlayerConnected(PhotonPlayer player)
+    {
+        // Debug.Log("On Photon Player Connected");
+    }
+
     public override void OnJoinedRoom()
     {
         LobbyscreenManager.singleton.SetRoomcode(PhotonNetwork.room.Name);
         UIController.singleton.GoToScreen(ScreenType.LOBBYSCREEN);
         if(PhotonNetwork.isMasterClient)
             return;
-
-        NetworkPlayer.singleton.Name = JoinscreenManager.singleton.Name;
+        
+        // Player player = this.gameObject.AddComponent<Player>();
+        // player.SetData(JoinscreenManager.singleton.Name);
+        LobbyscreenManager.singleton.SetFeedback("FUCKKK");
     }
 
     public override void OnPhotonJoinRoomFailed(object[] codeAndMsg)
