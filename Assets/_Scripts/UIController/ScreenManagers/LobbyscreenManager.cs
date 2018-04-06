@@ -90,7 +90,7 @@ public class LobbyscreenManager : UIManager
         this.roomCode.text = "Roomcode: " + code;
     }
 
-    public void ShowIcon()
+    public void AddPlayer(string name)
     {
         if(this.iconHolders.Count <= 0)
             return;
@@ -100,12 +100,12 @@ public class LobbyscreenManager : UIManager
 
         GameObject textObject = holder.transform.GetChild(0).gameObject;
         Text text = textObject.GetComponent<Text>();
-        text.text = "user";
+        text.text = name;
         text.color = Color.white;
         textObject.GetComponent<Transitions.MoveTo>().Move(null);
 
         GameObject iconObject = holder.transform.GetChild(1).gameObject;
-        iconObject.GetComponent<Image>().sprite = null;
+        iconObject.GetComponent<Image>().sprite = (Sprite)Daa.PLAYER_ICONS[0];
         iconObject.SetActive(true);
     }
 

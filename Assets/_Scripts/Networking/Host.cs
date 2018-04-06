@@ -15,10 +15,8 @@ public class Host : Photon.PunBehaviour
 		singleton = this;
 	}
 
-	[PunRPC]
 	private void AddPlayer(Player player)
 	{
-		Debug.Log("Add player");
 		this.players.Add(player);
 	}
 }

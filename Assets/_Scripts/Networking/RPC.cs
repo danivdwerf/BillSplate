@@ -11,14 +11,14 @@ public class RPC : Photon.PunBehaviour
         singleton = this;
     }
 
-    public void CallTest()
+    public void CallAddPlayer(string name)
     {
-        this.photonView.RPC("test", PhotonTargets.MasterClient, null);
+        this.photonView.RPC("AddPlayer", PhotonTargets.MasterClient, name);
     }
 
     [PunRPC]
-    public void test()
+    public void AddPlayer(string name)
     {
-        Debug.Log("RPC TEST!!");
+        LobbyscreenManager.singleton.AddPlayer(name);
     }
 }

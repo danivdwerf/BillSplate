@@ -56,9 +56,9 @@ public class NetworkController : Photon.PunBehaviour
         if(PhotonNetwork.isMasterClient)
             return;
         
-        // Player player = this.gameObject.AddComponent<Player>();
-        // player.SetData(JoinscreenManager.singleton.Name);
-        LobbyscreenManager.singleton.SetFeedback("FUCKKK");
+        string name = JoinscreenManager.singleton.Name;
+        this.host.AddPlayer(new Player(name));
+        RPC.singleton.CallAddPLayer(name);
     }
 
     public override void OnPhotonJoinRoomFailed(object[] codeAndMsg)
