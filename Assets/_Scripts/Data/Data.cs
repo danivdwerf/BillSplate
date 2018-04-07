@@ -13,4 +13,6 @@ public static class Data
 	public const string DEFAULT_NAME = "Randy";
 
 	public static Object[] PLAYER_ICONS = Resources.LoadAll("Playericons", typeof(Sprite));
+
+	public static RoundsData ROUNDS_DATA;
 }

@@ -13,10 +13,14 @@ public class Host : Photon.PunBehaviour
 		if(singleton != null && singleton != this)
 			Destroy(this.gameObject);
 		singleton = this;
+
+		this.players = new List<Player>();
 	}
 
-	private void AddPlayer(Player player)
+	public void AddPlayer(Player player)
 	{
 		this.players.Add(player);
+		// if(this.players.Count >= 3)
+			LobbyscreenManager.singleton.ShowStartbutton(true);
 	}
 }

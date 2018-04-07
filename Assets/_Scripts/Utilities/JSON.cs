@@ -7,12 +7,12 @@ namespace Utilities
 {
 	public class JSON : MonoBehaviour
 	{
-		public static JSON instance;
+		public static JSON singleton;
 		private void Awake ()
 		{
-			if (instance != null && instance != this)
+			if (singleton != null && singleton != this)
 				Destroy (this.gameObject);
-			instance = this;
+			singleton = this;
 		}
 
 		public void ToClass<T>(string json, ref T dataHolder)

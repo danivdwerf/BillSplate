@@ -40,4 +40,5 @@ MonoBehaviour:
   - Test
   - AddPlayer
   - test
+  - GoToGame
   DisableAutoOpenWizard: 1

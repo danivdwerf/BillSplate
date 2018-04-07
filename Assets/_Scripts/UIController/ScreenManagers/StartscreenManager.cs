@@ -23,10 +23,12 @@ public class StartscreenManager : UIManager
     protected override void SetScreenForMobile()
     {
         this.startButton.gameObject.SetActive(false);
+        this.joinButton.gameObject.SetActive(true);
     }
 
     protected override void SetScreenForComputer()
     {
+        this.startButton.gameObject.SetActive(true);
         this.joinButton.gameObject.SetActive(false);
     }
 

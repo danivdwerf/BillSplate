@@ -5,8 +5,6 @@ using System.Collections.Generic;
 
 public class NetworkController : Photon.PunBehaviour
 {
-
-    private Host host = null;
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.JoinLobby(TypedLobby.Default);
@@ -27,7 +25,7 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnCreatedRoom()
     {
-        this.host = this.gameObject.AddComponent<Host>();
+        this.gameObject.AddComponent<Host>();
     }
 
     public override void OnPhotonCreateRoomFailed(object[] codeAndMessage)
@@ -51,14 +49,15 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnJoinedRoom()
     {
-        LobbyscreenManager.singleton.SetRoomcode(PhotonNetwork.room.Name);
         UIController.singleton.GoToScreen(ScreenType.LOBBYSCREEN);
         if(PhotonNetwork.isMasterClient)
+        {
+            LobbyscreenManager.singleton.SetRoomcode(PhotonNetwork.room.Name);
             return;
+        }
         
         string name = JoinscreenManager.singleton.Name;
-        this.host.AddPlayer(new Player(name));
-        RPC.singleton.CallAddPLayer(name);
+        RPC.singleton.CallAddPlayer(name);
     }
 
     public override void OnPhotonJoinRoomFailed(object[] codeAndMsg)

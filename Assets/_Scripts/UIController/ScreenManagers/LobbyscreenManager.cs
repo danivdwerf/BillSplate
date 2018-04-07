@@ -11,6 +11,7 @@ public class LobbyscreenManager : UIManager
     [SerializeField] private Text roomCode;
     [SerializeField] private GameObject iconPrefab;
     [SerializeField] private GameObject wheel;
+    [SerializeField] private Button playButton;
     private List<GameObject> iconHolders;
 
     [Space(10)]
@@ -24,7 +25,7 @@ public class LobbyscreenManager : UIManager
         if(singleton != null && singleton != this)
             Destroy(this.gameObject);
         singleton = this;
-
+        this.screenType = ScreenType.LOBBYSCREEN;
         base.Awake();
     }
 
@@ -35,7 +36,19 @@ public class LobbyscreenManager : UIManager
 
     protected override void OnScreenEnabled()
     {
-        
+        this.playButton.gameObject.SetActive(false);
+        this.playButton.onClick.AddListener(()=>this.OnStartGame());
+    }
+
+    public void ShowStartbutton(bool value)
+    {
+        this.playButton.gameObject.SetActive(value);
+    }
+
+    private void OnStartGame()
+    {
+        PhotonNetwork.room.IsOpen = false;
+        RPC.singleton.CallGoToGame();
     }
 
     protected override void SetScreenForComputer()
@@ -45,18 +58,25 @@ public class LobbyscreenManager : UIManager
 
         wheel.SetActive(true);
         roomCode.gameObject.SetActive(true);
+
         iconHolders = new List<GameObject>(Data.MAX_PLAYERS);
+
         this.CreateIconHolders();
     }
 
     protected override void SetScreenForMobile()
     {
+        roomCode.gameObject.SetActive(false);
+        roomCode = null;
+        
         iconPrefab = null;
+
         wheel.gameObject.SetActive(false);
         wheel = null;
-        iconHolders = null;
-        roomCode.gameObject.SetActive(false);
 
+        iconHolders = null;
+
+        feedback.gameObject.SetActive(true);
         this.SetFeedback("Waiting for the host...");
     }
 
@@ -105,12 +125,12 @@ public class LobbyscreenManager : UIManager
         textObject.GetComponent<Transitions.MoveTo>().Move(null);
 
         GameObject iconObject = holder.transform.GetChild(1).gameObject;
-        iconObject.GetComponent<Image>().sprite = (Sprite)Daa.PLAYER_ICONS[0];
+        iconObject.GetComponent<Image>().sprite = (Sprite)Data.PLAYER_ICONS[0];
         iconObject.SetActive(true);
     }
 
     protected override void OnScreenDisabled()
     {
-
+        this.playButton.onClick.RemoveAllListeners();
     }
 }
