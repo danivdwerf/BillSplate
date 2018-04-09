@@ -26,6 +26,13 @@ public class NetworkController : Photon.PunBehaviour
     public override void OnCreatedRoom()
     {
         this.gameObject.AddComponent<Host>();
+        
+        Utilities.JSON.singleton.loadJSON("http://freetimedev.com/gamedata.json", (string json)=>
+        {
+            RoundsData data = new RoundsData();
+            Utilities.JSON.singleton.ToClass(json, ref data);
+            Data.ROUNDS_DATA = data;
+        });
     }
 
     public override void OnPhotonCreateRoomFailed(object[] codeAndMessage)

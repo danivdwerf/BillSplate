@@ -21,6 +21,11 @@ public class RPC : Photon.PunBehaviour
         this.photonView.RPC("GoToGame", PhotonTargets.All, null);
     }
 
+    public void SendQuestions(string[] quesitons, PhotonPlayer target)
+    {
+        this.photonView.RPC("ReciveQuestions", target, quesitons);
+    }
+
     [PunRPC]
     public void AddPlayer(string name)
     {
@@ -32,5 +37,11 @@ public class RPC : Photon.PunBehaviour
     public void GoToGame()
     {
         UIController.singleton.GoToScreen(ScreenType.GAMESCREEN);
+    }
+
+    [PunRPC]
+    public void ReciveQuestions(string[] quesitons)
+    {
+        GamescreenManager.singleton.SetQuestion(quesitons[0], false);
     }
 }

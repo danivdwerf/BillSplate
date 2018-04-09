@@ -11,13 +11,6 @@ public class NetworkConnector : MonoBehaviour
 	private void Start()
 	{
 		UIController.singleton.ShowLoading(true);
-		Utilities.JSON.singleton.loadJSON("http://freetimedev.com/gamedata.json", (string json)=>
-        {
-            RoundsData data = new RoundsData();
-            Utilities.JSON.singleton.ToClass(json, ref data);
-            Data.ROUNDS_DATA = data;
-        });
-		
 		this.ConnectToServer();
 	}
 
