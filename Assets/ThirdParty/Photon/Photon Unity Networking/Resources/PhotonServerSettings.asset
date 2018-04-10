@@ -43,4 +43,5 @@ MonoBehaviour:
   - GoToGame
   - SendQuestions
   - ReciveQuestions
+  - AddPlayerToLobby
   DisableAutoOpenWizard: 1

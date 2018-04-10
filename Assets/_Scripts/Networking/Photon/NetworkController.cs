@@ -13,9 +13,13 @@ public class NetworkController : Photon.PunBehaviour
     public override void OnMasterClientSwitched(PhotonPlayer newMaster)
 	{
 		PhotonNetwork.LeaveRoom();
-		UIController.singleton.GoToScreen(ScreenType.JOINSCREEN);
 		JoinscreenManager.singleton.SetFeedback("The room you were in was closed.");
 	}
+
+    public override void OnLeftRoom()
+    {
+        UIController.singleton.GoToScreen(ScreenType.JOINSCREEN);
+    }
 
     public override void OnJoinedLobby()
     {
@@ -26,7 +30,6 @@ public class NetworkController : Photon.PunBehaviour
     public override void OnCreatedRoom()
     {
         this.gameObject.AddComponent<Host>();
-        
         Utilities.JSON.singleton.loadJSON("http://freetimedev.com/gamedata.json", (string json)=>
         {
             RoundsData data = new RoundsData();
@@ -51,7 +54,9 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnPhotonPlayerConnected(PhotonPlayer player)
     {
-        // Debug.Log("On Photon Player Connected");
+        LobbyscreenManager.singleton.AddPlayer(player.NickName);
+        if(PhotonNetwork.room.PlayerCount > 3)
+            LobbyscreenManager.singleton.ShowStartbutton(true);
     }
 
     public override void OnJoinedRoom()
@@ -62,9 +67,7 @@ public class NetworkController : Photon.PunBehaviour
             LobbyscreenManager.singleton.SetRoomcode(PhotonNetwork.room.Name);
             return;
         }
-        
-        string name = JoinscreenManager.singleton.Name;
-        RPC.singleton.CallAddPlayer(name);
+        PhotonNetwork.player.NickName = JoinscreenManager.singleton.Name;
     }
 
     public override void OnPhotonJoinRoomFailed(object[] codeAndMsg)

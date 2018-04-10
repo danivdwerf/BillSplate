@@ -11,9 +11,9 @@ public class RPC : Photon.PunBehaviour
         singleton = this;
     }
 
-    public void CallAddPlayer(string name)
+    public void CallAddPlayerToLobby(string name)
     {
-        this.photonView.RPC("AddPlayer", PhotonTargets.MasterClient, name);
+        this.photonView.RPC("AddPlayerToLobby", PhotonTargets.MasterClient, name);
     }
 
     public void CallGoToGame()
@@ -21,16 +21,15 @@ public class RPC : Photon.PunBehaviour
         this.photonView.RPC("GoToGame", PhotonTargets.All, null);
     }
 
-    public void SendQuestions(string[] quesitons, PhotonPlayer target)
+    public void SendQuestions(string[] questions, PhotonPlayer target)
     {
-        this.photonView.RPC("ReciveQuestions", target, quesitons);
+        this.photonView.RPC("ReciveQuestions", target, questions);
     }
 
     [PunRPC]
-    public void AddPlayer(string name)
+    public void AddPlayerToLobby(string name)
     {
-        Host.singleton.AddPlayer(new Player(name));
-        LobbyscreenManager.singleton.AddPlayer(name);
+        // LobbyscreenManager.singleton.AddPlayer(name);
     }
 
     [PunRPC]
@@ -40,8 +39,8 @@ public class RPC : Photon.PunBehaviour
     }
 
     [PunRPC]
-    public void ReciveQuestions(string[] quesitons)
+    public void ReciveQuestions(string[] questions)
     {
-        GamescreenManager.singleton.SetQuestion(quesitons[0], false);
+        GamescreenManager.singleton.SetQuestion(questions[0], false);
     }
 }
