@@ -54,8 +54,8 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnPhotonPlayerConnected(PhotonPlayer player)
     {
-        Debug.Log(player.ID);
         LobbyscreenManager.singleton.AddPlayer(player.NickName);
+        Host.singleton.AddPlayerToScore((byte)player.ID);
         if(PhotonNetwork.room.PlayerCount > 3)
             LobbyscreenManager.singleton.ShowStartbutton(true);
     }
@@ -68,6 +68,8 @@ public class NetworkController : Photon.PunBehaviour
             LobbyscreenManager.singleton.SetRoomcode(PhotonNetwork.room.Name);
             return;
         }
+
+        this.gameObject.AddComponent<Client>();
         PhotonNetwork.player.NickName = JoinscreenManager.singleton.Name;
     }
 

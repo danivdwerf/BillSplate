@@ -7,12 +7,24 @@ public class Host : Photon.PunBehaviour
 	public static Host singleton;
 	private byte currentRound;
 
+    private Dictionary<byte, int> scores;
+
 	private void Awake()
 	{
 		if(singleton != null && singleton != this)
 			Destroy(this.gameObject);
 		singleton = this;
 	}
+
+    private void Start() 
+    {
+        this.scores = new Dictionary<byte, int>();    
+    }
+
+    public void AddPlayerToScore(byte id)
+    {
+        this.scores.Add(id, 0);
+    }
 
     public void UpdateRound(byte? roundNumber)
     {

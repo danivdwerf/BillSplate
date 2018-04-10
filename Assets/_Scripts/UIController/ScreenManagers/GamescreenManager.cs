@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+using System;
 using System.Collections.Generic;
 public class GamescreenManager : UIManager 
 {
@@ -11,6 +12,7 @@ public class GamescreenManager : UIManager
 
     [Space(10)]
     [Header("Client version")]
+    public static Action<string> OnSubmitAnswer;
     [SerializeField]private GameObject clientView;
     [SerializeField]private Text nameField;
     [SerializeField]private Text question;
@@ -65,11 +67,16 @@ public class GamescreenManager : UIManager
 
     private void OnSubmit()
     {
-        if(!this.ValidateAnswer())
+        string answer = this.answerField.text;
+        
+        if(!this.ValidateAnswer(answer))
             return;
+
+        if(OnSubmitAnswer != null)
+            OnSubmitAnswer(answer);
     }
 
-    private bool ValidateAnswer()
+    private bool ValidateAnswer(string text)
     {
         return true;
     }
