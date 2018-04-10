@@ -54,6 +54,7 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnPhotonPlayerConnected(PhotonPlayer player)
     {
+        Debug.Log(player.ID);
         LobbyscreenManager.singleton.AddPlayer(player.NickName);
         if(PhotonNetwork.room.PlayerCount > 3)
             LobbyscreenManager.singleton.ShowStartbutton(true);

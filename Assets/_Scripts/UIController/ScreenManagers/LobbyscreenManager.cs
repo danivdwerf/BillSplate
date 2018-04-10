@@ -125,7 +125,7 @@ public class LobbyscreenManager : UIManager
         textObject.GetComponent<Transitions.MoveTo>().Move(null);
 
         GameObject iconObject = holder.transform.GetChild(1).gameObject;
-        iconObject.GetComponent<Image>().sprite = (Sprite)Data.PLAYER_ICONS[0];
+        iconObject.GetComponent<Image>().sprite = (Sprite)Data.PLAYER_ICONS[PhotonNetwork.room.PlayerCount-1];
         iconObject.SetActive(true);
     }
 
