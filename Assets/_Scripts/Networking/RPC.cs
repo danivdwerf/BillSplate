@@ -30,6 +30,6 @@ public class RPC : Photon.PunBehaviour
     [PunRPC]
     public void ReciveQuestions(string[] questions)
     {
-        GamescreenManager.singleton.SetQuestion(questions[0], false);
+        Client.singleton.SetPrompts(questions);
     }
 }

@@ -63,6 +63,7 @@ public class GamescreenManager : UIManager
     {
         this.question.text = question;
         this.answerField.gameObject.SetActive(!removeInput);
+        this.submitButton.gameObject.SetActive(!removeInput);
     }
 
     private void OnSubmit()

@@ -16,7 +16,7 @@ public class Client : MonoBehaviour
 
     private void OnEnable() 
     {
-
+        GamescreenManager.OnSubmitAnswer += this.SetAnswer;
     }
 
     public void SetPrompts(string[] prompts)
@@ -49,5 +49,11 @@ public class Client : MonoBehaviour
     public void SetAnswer(string answer)
     {
         this.answers[this.promptIndex] = answer;
+        this.UpdatePrompt();
+    }
+
+    private void OnDisable() 
+    {
+        GamescreenManager.OnSubmitAnswer -= this.SetAnswer;    
     }
 }
