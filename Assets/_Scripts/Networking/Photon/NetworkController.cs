@@ -13,6 +13,7 @@ public class NetworkController : Photon.PunBehaviour
     public override void OnMasterClientSwitched(PhotonPlayer newMaster)
 	{
 		PhotonNetwork.LeaveRoom();
+        Destroy(this.GetComponent<Client>());
 		JoinscreenManager.singleton.SetFeedback("The room you were in was closed.");
 	}
 
@@ -54,6 +55,8 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnPhotonPlayerConnected(PhotonPlayer player)
     {
+        if(!PhotonNetwork.isMasterClient)
+            return;
         LobbyscreenManager.singleton.AddPlayer(player.NickName);
         Host.singleton.AddPlayerToScore((byte)player.ID);
         if(PhotonNetwork.room.PlayerCount > 3)

@@ -10,6 +10,7 @@ public class Host : Photon.PunBehaviour
     private string[] currentPrompts;
     private Dictionary<byte, int> scores;
     private Dictionary<byte, string[]> currentAnswers;
+    private byte amountOfAnswers;
 
 	private void Awake()
 	{
@@ -40,6 +41,7 @@ public class Host : Photon.PunBehaviour
             this.currentAnswers.Add(key1, tmp);
         }
         else this.currentAnswers[key1][1] = value1;
+        this.amountOfAnswers++;
 
         byte key2 = questionIDs[1];
         string value2 = answers[1];
@@ -50,8 +52,13 @@ public class Host : Photon.PunBehaviour
             this.currentAnswers.Add(key2, tmp);
         }
         else this.currentAnswers[key2][1] = value2;
+        this.amountOfAnswers++;
 
-        if(this.currentAnswers.Count >= this.currentPrompts.Length*2)
+        Debug.Log("recieved answers: ");
+        Debug.Log(answers[0]);
+        Debug.Log(answers[1]);
+
+        if(this.amountOfAnswers >= this.currentPrompts.Length*2)
         {
             Debug.Log("Everybody answered");
         }
@@ -63,6 +70,7 @@ public class Host : Photon.PunBehaviour
             return;
 
         this.currentRound = (roundNumber == null) ? (byte)(this.currentRound+1) : (byte)roundNumber;
+        this.amountOfAnswers = 0;
 
 		PhotonPlayer[] players = PhotonNetwork.playerList;
         byte amountOfPlayers = (byte)players.Length;
@@ -95,12 +103,12 @@ public class Host : Photon.PunBehaviour
             string[] tmp = new string[2];
 			tmp[0] = currentPrompts[index];
 			tmp[1] = currentPrompts[(index==promptsNeeded-1) ? 0 : index+1];
+            prompts.Add(tmp);
 
             byte[] ids = new byte[2];
             ids[0] = (byte)index;
             ids[1] = (byte)((index==promptsNeeded-1) ? 0 : index+1);
-
-            prompts.Add(tmp);
+            questionIDs.Add(ids);
 			index++;
         }
 
