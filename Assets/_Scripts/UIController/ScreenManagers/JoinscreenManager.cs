@@ -35,7 +35,7 @@ public class JoinscreenManager : UIManager
         if(!this.ValidateValues())
             return;
 
-        
+        PhotonNetwork.playerName = usernameField.text;
         PhotonNetwork.JoinRoom(roomcodeField.text);
     }
 

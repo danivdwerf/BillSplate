@@ -33,6 +33,7 @@ public class RoomscreenManager : UIManager
             return;
         
         RoomOptions roomOptions = new RoomOptions();
+        roomOptions.PublishUserId = true;
         roomOptions.IsVisible = false;
         roomOptions.MaxPlayers = Data.MAX_PLAYERS;
 

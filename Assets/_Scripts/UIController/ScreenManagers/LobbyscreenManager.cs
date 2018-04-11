@@ -18,8 +18,6 @@ public class LobbyscreenManager : UIManager
     [Header("Mobile layout")]
     [SerializeField] private Text feedback;
 
-    private int amountOfPlayers;
-
     protected override void Awake()
     {
         if(singleton != null && singleton != this)
@@ -28,11 +26,6 @@ public class LobbyscreenManager : UIManager
         
         this.screenType = ScreenType.LOBBYSCREEN;
         base.Awake();
-    }
-
-    private void Start() 
-    {
-        amountOfPlayers = 0;
     }
 
     protected override void OnScreenEnabled()

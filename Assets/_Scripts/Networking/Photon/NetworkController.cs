@@ -57,10 +57,13 @@ public class NetworkController : Photon.PunBehaviour
     {
         if(!PhotonNetwork.isMasterClient)
             return;
+
         LobbyscreenManager.singleton.AddPlayer(player.NickName);
         Host.singleton.AddPlayerToScore((byte)player.ID);
-        if(PhotonNetwork.room.PlayerCount > 3)
-            LobbyscreenManager.singleton.ShowStartbutton(true);
+        if(PhotonNetwork.room.PlayerCount <= 3)
+            return;
+        
+        LobbyscreenManager.singleton.ShowStartbutton(true);
     }
 
     public override void OnJoinedRoom()
@@ -71,9 +74,8 @@ public class NetworkController : Photon.PunBehaviour
             LobbyscreenManager.singleton.SetRoomcode(PhotonNetwork.room.Name);
             return;
         }
-
+        
         this.gameObject.AddComponent<Client>();
-        PhotonNetwork.player.NickName = JoinscreenManager.singleton.Name;
     }
 
     public override void OnPhotonJoinRoomFailed(object[] codeAndMsg)

@@ -54,14 +54,15 @@ public class Host : Photon.PunBehaviour
         else this.currentAnswers[key2][1] = value2;
         this.amountOfAnswers++;
 
-        Debug.Log("recieved answers: ");
-        Debug.Log(answers[0]);
-        Debug.Log(answers[1]);
+        if(this.amountOfAnswers < this.currentPrompts.Length*2)
+            return;
 
-        if(this.amountOfAnswers >= this.currentPrompts.Length*2)
-        {
-            Debug.Log("Everybody answered");
-        }
+        Dictionary<string, string[]> promptAndAnswer = new Dictionary<string, string[]>();
+        byte len = (byte)this.currentPrompts.Length;
+        for(byte i = 0; i < len; i++)
+            promptAndAnswer.Add(this.currentPrompts[i], currentAnswers[i]);
+
+        GamescreenManager.singleton.StartVoting(promptAndAnswer);
     }
 
     public void UpdateRound(byte? roundNumber)

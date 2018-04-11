@@ -2,13 +2,17 @@
 using UnityEngine.UI;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+
 public class GamescreenManager : UIManager 
 {
     public static GamescreenManager singleton;
 
 	[Header("Master version")]
     [SerializeField]private GameObject masterView;
+    [SerializeField]private Text questionText;
+    [SerializeField]private Text[] answers;
 
     [Space(10)]
     [Header("Client version")]
@@ -66,6 +70,17 @@ public class GamescreenManager : UIManager
         this.question.text = question;
         this.answerField.gameObject.SetActive(!removeInput);
         this.submitButton.gameObject.SetActive(!removeInput);
+    }
+
+    public void StartVoting(Dictionary<string, string[]> data)
+    {
+        int len = data.Keys.Count;
+        string[] keys = new string[len];
+        data.Keys.CopyTo(keys, 0);
+
+        questionText.text = keys[0];
+        answers[0].text = data[keys[0]][0];
+        answers[1].text = data[keys[0]][1];
     }
 
     private void OnSubmit()
