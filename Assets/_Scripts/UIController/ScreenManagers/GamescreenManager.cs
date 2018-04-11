@@ -13,6 +13,7 @@ public class GamescreenManager : UIManager
     [Space(10)]
     [Header("Client version")]
     public static Action<string> OnSubmitAnswer;
+    
     [SerializeField]private GameObject clientView;
     [SerializeField]private Text nameField;
     [SerializeField]private Text question;
@@ -69,7 +70,6 @@ public class GamescreenManager : UIManager
     private void OnSubmit()
     {
         string answer = this.answerField.text;
-        
         if(!this.ValidateAnswer(answer))
             return;
 

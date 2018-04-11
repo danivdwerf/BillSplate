@@ -5,6 +5,7 @@ public class Client : MonoBehaviour
 
     private string[] currentPrompts;
     private string[] answers;
+    private byte[] promptIDs;
     private byte promptIndex;
     
     private void Awake()
@@ -19,14 +20,15 @@ public class Client : MonoBehaviour
         GamescreenManager.OnSubmitAnswer += this.SetAnswer;
     }
 
-    public void SetPrompts(string[] prompts)
+    public void SetPrompts(byte[] ids, string[] prompts)
     {
         this.currentPrompts = new string[2];
-        this.answers = new string[2];
-
         this.currentPrompts[0] = prompts[0];
         this.currentPrompts[1] = prompts[1];
+        
+        this.answers = new string[2];
 
+        this.promptIDs = ids;
         this.promptIndex = 0;
 
         GamescreenManager.singleton.SetQuestion(prompts[0], false);
@@ -43,6 +45,7 @@ public class Client : MonoBehaviour
         else
         {
             GamescreenManager.singleton.SetQuestion("Wait for the other players", true);
+            RPC.singleton.SendAnswers(this.promptIDs, this.answers);
         }
     }
 
