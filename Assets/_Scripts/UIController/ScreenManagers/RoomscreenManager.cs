@@ -13,10 +13,10 @@ public class RoomscreenManager : UIManager
     protected override void Awake()
     {
         if(singleton != null && singleton != this)
-            Destroy(this.gameObject);
+            Destroy(this);
         singleton = this;
-        this.screenType = ScreenType.CREATEROOMSCREEN;
 
+        this.screenType = ScreenType.CREATEROOMSCREEN;
         base.Awake();
     }
 

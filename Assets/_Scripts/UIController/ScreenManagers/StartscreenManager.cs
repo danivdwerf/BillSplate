@@ -13,8 +13,9 @@ public class StartscreenManager : UIManager
     protected override void Awake()
     {
         if(singleton != null && singleton != this)
-            Destroy(this.gameObject);
+            Destroy(this);
         singleton = this;
+        
         this.screenType = ScreenType.STARTSCREEN;
 
         base.Awake();

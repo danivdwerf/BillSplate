@@ -22,7 +22,7 @@ public class UIController : MonoBehaviour
 	private void Awake()
 	{
 		if(singleton != null && singleton != this)
-			Destroy(this.gameObject);
+			Destroy(this);
 		singleton = this;
 	}
 

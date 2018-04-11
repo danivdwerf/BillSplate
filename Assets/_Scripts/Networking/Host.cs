@@ -15,7 +15,7 @@ public class Host : Photon.PunBehaviour
 	private void Awake()
 	{
 		if(singleton != null && singleton != this)
-			Destroy(this.gameObject);
+			Destroy(this);
 		singleton = this;
 	}
 
