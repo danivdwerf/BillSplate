@@ -8,7 +8,7 @@ public class Host : Photon.PunBehaviour
 
 	private byte currentRound;
     private string[] currentPrompts;
-    private Dictionary<byte, int> scores;
+    private Dictionary<int, int> scores;
     private Dictionary<byte, string[]> currentAnswers;
     private byte amountOfAnswers;
 
@@ -21,10 +21,10 @@ public class Host : Photon.PunBehaviour
 
     private void Start() 
     {
-        this.scores = new Dictionary<byte, int>();
+        this.scores = new Dictionary<int, int>();
     }
 
-    public void AddPlayerToScore(byte id)
+    public void AddPlayerToScore(int id)
     {
         this.scores.Add(id, 0);
     }

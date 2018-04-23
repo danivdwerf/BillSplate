@@ -1,16 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class AboutscreenManager : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-		
-	}
+public class AboutscreenManager : UIManager 
+{
+	public static AboutscreenManager singleton;
 	
-	// Update is called once per frame
-	void Update () {
+	protected override void Awake()
+	{
+		if(singleton != null && singleton != this)
+			Destroy(this);
+		singleton = this;
+		
+		this.screenType = ScreenType.ABOUTSCREEN;
+		base.Awake();
+	}
+
+	protected override void OnScreenEnabled()
+	{
+
+	}
+
+	protected override void OnScreenDisabled()
+	{
 		
 	}
 }

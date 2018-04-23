@@ -59,7 +59,7 @@ public class NetworkController : Photon.PunBehaviour
             return;
 
         LobbyscreenManager.singleton.AddPlayer(player.NickName);
-        Host.singleton.AddPlayerToScore((byte)player.ID);
+        Host.singleton.AddPlayerToScore(player.ID);
         if(PhotonNetwork.room.PlayerCount <= 3)
             return;
         
@@ -74,7 +74,6 @@ public class NetworkController : Photon.PunBehaviour
             LobbyscreenManager.singleton.SetRoomcode(PhotonNetwork.room.Name);
             return;
         }
-        
         this.gameObject.AddComponent<Client>();
     }
 

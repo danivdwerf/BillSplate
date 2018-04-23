@@ -7,76 +7,72 @@ public class LobbyscreenManager : UIManager
 {
     public static LobbyscreenManager singleton;
 
-    [Header("Computer layout ")]
-    [SerializeField] private Text roomCode;
-    [SerializeField] private GameObject iconPrefab;
-    [SerializeField] private GameObject wheel;
-    [SerializeField] private Button playButton;
+    [Header("Computer View")]
+    [SerializeField]private GameObject masterView;
+    [SerializeField]private GameObject iconPrefab;
+    [SerializeField]private Transform wheel;
+    [SerializeField]private Text roomCode;
+
     private List<GameObject> iconHolders;
+    private Button playButton;
 
     [Space(10)]
-    [Header("Mobile layout")]
-    [SerializeField] private Text feedback;
+    [Header("Mobile View")]
+    [SerializeField]private GameObject clientView;
 
     protected override void Awake()
     {
         if(singleton != null && singleton != this)
             Destroy(this);
         singleton = this;
-        
+
+        this.playButton = this.wheel.GetComponentInChildren<Button>();
         this.screenType = ScreenType.LOBBYSCREEN;
         base.Awake();
     }
 
-    protected override void OnScreenEnabled()
-    {
-        this.playButton.gameObject.SetActive(false);
-        this.playButton.onClick.AddListener(()=>this.OnStartGame());
-    }
-
-    public void ShowStartbutton(bool value)
-    {
-        this.playButton.gameObject.SetActive(value);
-    }
-
-    private void OnStartGame()
-    {
-        PhotonNetwork.room.IsOpen = false;
-        RPC.singleton.CallGoToGame();
-    }
-
     protected override void SetScreenForComputer()
     {
-        feedback.gameObject.SetActive(false);
-        feedback = null;
+        this.clientView.SetActive(false);
+        this.clientView = null;
 
-        wheel.SetActive(true);
-        roomCode.gameObject.SetActive(true);
+        this.masterView.SetActive(true);
+        this.wheel.gameObject.SetActive(true);
+        this.roomCode.gameObject.SetActive(true);
 
-        iconHolders = new List<GameObject>(Data.MAX_PLAYERS);
-
+        this.iconHolders = new List<GameObject>(Data.MAX_PLAYERS);
         this.CreateIconHolders();
     }
 
     protected override void SetScreenForMobile()
     {
-        roomCode.gameObject.SetActive(false);
-        roomCode = null;
+        this.masterView.SetActive(false);
+        this.masterView = null;
+
+        this.wheel.gameObject.SetActive(false);
+        this.wheel = null;
+
+        this.roomCode.gameObject.SetActive(false);
+        this.roomCode = null;
         
-        iconPrefab = null;
-
-        wheel.gameObject.SetActive(false);
-        wheel = null;
-
-        iconHolders = null;
-
-        feedback.gameObject.SetActive(true);
-        this.SetFeedback("Waiting for the host...");
+        this.iconPrefab = null;
+        this.iconHolders = null;
+        this.playButton = null;
     }
 
-    public void SetFeedback(string feedback)
+    protected override void OnScreenEnabled()
     {
-        this.feedback.text = feedback;
+        if(playButton != null)
+        {
+            this.playButton.gameObject.SetActive(false);
+            this.playButton.onClick.AddListener(()=>this.OnStartGame());
+        }
+    } 
+
+    private void OnStartGame()
+    {
+        PhotonNetwork.room.IsOpen = false;
+        RPC.singleton.CallGoToGame();
     }
 
     private void CreateIconHolders()
@@ -87,21 +83,16 @@ public class LobbyscreenManager : UIManager
         for(byte i = 0; i < len; i++)
         {
             GameObject iconHolder = GameObject.Instantiate(this.iconPrefab);
-            iconHolder.transform.SetParent(wheel.transform);
+            iconHolder.transform.SetParent(wheel);
 
             GameObject icon = iconHolder.transform.GetChild(1).gameObject;
             icon.SetActive(false);
 
-            Vector3 pos = MathHelper.PlaceOnCircle(wheel.transform.position, 220, maxItemSize*i);
+            Vector3 pos = MathHelper.PlaceOnCircle(wheel.position, 220, maxItemSize*i);
             iconHolder.transform.localPosition = pos;
             iconHolder.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             this.iconHolders.Add(iconHolder);
         }
-    }
-
-    public void SetRoomcode(string code)
-    {
-        this.roomCode.text = "Roomcode: " + code;
     }
 
     public void AddPlayer(string name)
@@ -123,8 +114,23 @@ public class LobbyscreenManager : UIManager
         iconObject.SetActive(true);
     }
 
+    public void ShowStartbutton(bool value)
+    {
+        if(this.playButton == null)
+            return;
+        this.playButton.gameObject.SetActive(value);
+    }
+
+    public void SetRoomcode(string code)
+    {
+        if(this.roomCode == null)
+            return;
+        this.roomCode.text = "Roomcode: " + code;
+    }
+
     protected override void OnScreenDisabled()
     {
-        this.playButton.onClick.RemoveAllListeners();
+        if(playButton != null)
+            this.playButton.onClick.RemoveAllListeners();
     }
 }

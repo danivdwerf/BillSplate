@@ -1,10 +1,6 @@
 using UnityEngine;
 using UnityEngine.Networking;
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace Utilities
 {
     public class HTTP : MonoBehaviour
@@ -27,16 +23,16 @@ namespace Utilities
         /// Sends an HTTP Request with the given data
         /// </summary>
         /// <param name="url">The url to send the request to</param>
-        /// <param name="data">An WWWForm with data (GET requests require the data to be in the url i.e. http://www.mywebsite.com/folder/requesthandler.php?dat1=8&data2=hallo)</param>
+        /// <param name="data">An WWWForm with data (GET requests require the data to be in the url i.e. http://www.mywebsite.com/folder/requesthandler.php?dat1=8&data2="hallo")</param>
         /// <param name="method">The method of the request</param>
-        /// <param name="headers">The headers of the request (These are really important! They will be the difference between success and not even sending)</param>
+        /// <param name="headers">The headers of the request</param>
         /// <param name="callback">A callback with information</param>
-        public void SendRequest(string url, byte[] data, Method method, Hashtable headers, Action<Hashtable> callback = null)
+        public void SendRequest(string url, byte[] data, Method method, System.Collections.Hashtable headers, System.Action<System.Collections.Hashtable> callback = null)
         {
             StartCoroutine(Send(url, data, method, headers, callback));
         }
 
-        private IEnumerator Send(string url, byte[] data, Method method, Hashtable headers, Action<Hashtable> callback)
+        private System.Collections.IEnumerator Send(string url, byte[] data, Method method, System.Collections.Hashtable headers, System.Action<System.Collections.Hashtable> callback)
         {
             UnityWebRequest www = default(UnityWebRequest);
             if(method==Method.GET)
@@ -66,7 +62,7 @@ namespace Utilities
             yield return www.SendWebRequest();
             if(callback != null)
             {
-                Hashtable response = new Hashtable();
+                System.Collections.Hashtable response = new System.Collections.Hashtable();
                 response["response-code"] = www.responseCode;
                 response["response-text"] = www.downloadHandler.text;
                 callback(response);
