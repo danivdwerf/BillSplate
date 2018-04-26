@@ -3,6 +3,8 @@
 public abstract class UIManager : MonoBehaviour 
 {
 	protected ScreenType screenType;
+	protected bool isEnabled;
+	public bool Enabled{get{return this.isEnabled;}}
 
 	protected virtual void Awake()
 	{
@@ -22,10 +24,16 @@ public abstract class UIManager : MonoBehaviour
 
 	private void OnScreenChanged(ScreenType screen)
 	{
-		if(screenType == screen)
+		if(this.screenType == screen)
+		{
+			this.isEnabled = true;
 			this.OnScreenEnabled();
+		}
 		else
+		{
+			this.isEnabled = false;
 			this.OnScreenDisabled();
+		}
 	}
 	protected virtual void OnScreenEnabled(){}
 	protected virtual void OnScreenDisabled(){}

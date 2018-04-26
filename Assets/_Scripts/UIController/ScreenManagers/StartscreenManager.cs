@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class StartscreenManager : UIManager 
 {
@@ -7,6 +8,9 @@ public class StartscreenManager : UIManager
 
     [Header("Computer")]
     [SerializeField]private GameObject masterView;
+    [SerializeField]private Transitions.MoveTo headerMove;
+    [SerializeField]private VideoPlayer videoPlayer;
+    [SerializeField]private RawImage videoTexture;
     [SerializeField]private Button createGame;
     [SerializeField]private Button aboutGameMaster;
 
@@ -59,9 +63,26 @@ public class StartscreenManager : UIManager
         this.aboutGameClient.gameObject.SetActive(false);
         this.aboutGameClient = null;
 
+        StartCoroutine(PrepareVideo());    
+
         this.masterView.SetActive(true);        
         this.createGame.gameObject.SetActive(true);
         this.aboutGameMaster.gameObject.SetActive(true);
+    }
+
+    private System.Collections.IEnumerator PrepareVideo()
+    {
+        this.videoPlayer.Prepare();
+        while(!this.videoPlayer.isPrepared)
+            yield return new WaitForEndOfFrame();
+        this.videoTexture.texture = this.videoPlayer.texture;
+        if(this.isEnabled)
+        {
+            UIController.singleton.ShowLoading(false);
+            this.videoPlayer.Play();
+            this.headerMove.Move(null);
+        }
+        yield return null;
     }
 
     /// <summary>
@@ -71,14 +92,29 @@ public class StartscreenManager : UIManager
     {
         if(this.masterView != null)
         {
-            this.createGame.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.CREATEROOMSCREEN));
+            this.createGame.onClick.AddListener(this.CreateGame);
             this.aboutGameMaster.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.ABOUTSCREEN));
+            
+            if(!this.videoPlayer.isPrepared) UIController.singleton.ShowLoading(true);
+            if(!this.videoPlayer.isPlaying) this.videoPlayer.Play();
         }
         else
         {
             this.joinGame.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.JOINSCREEN));
             this.aboutGameClient.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.ABOUTSCREEN));
         }
+    }
+
+    public void CreateGame()
+    {
+        UIController.singleton.ShowLoading(true);
+        string roomCode = StringExtensions.Random(5, CharacterTypes.LOWERCASE|CharacterTypes.UPPERCASE|CharacterTypes.NUMBERS);
+
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.PublishUserId = true;
+        roomOptions.IsVisible = false;
+        roomOptions.MaxPlayers = Data.MAX_PLAYERS;
+        PhotonNetwork.CreateRoom(roomCode, roomOptions, TypedLobby.Default);
     }
 
     /// <summary>

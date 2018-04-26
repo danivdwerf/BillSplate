@@ -24,8 +24,13 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnJoinedLobby()
     {
-        UIController.singleton.GoToScreen(ScreenType.STARTSCREEN);
-        UIController.singleton.ShowLoading(false);
+        if(SplashScreenManager.singleton.Enabled)
+            SplashScreenManager.OnSplashDone = ()=>UIController.singleton.GoToScreen(ScreenType.STARTSCREEN);
+        else
+        {
+            UIController.singleton.GoToScreen(ScreenType.STARTSCREEN);
+            UIController.singleton.ShowLoading(false);
+        }
     }
 
     public override void OnCreatedRoom()
@@ -41,16 +46,12 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnPhotonCreateRoomFailed(object[] codeAndMessage)
     {
-        UIController.singleton.GoToScreen(ScreenType.CREATEROOMSCREEN);
-        string error = "Failed to create room.";
         if(codeAndMessage != null)
         {
 		    short errorCode = (short)codeAndMessage[0];
-
 		    if(errorCode == 32766)
-			    error = "This roomname is already taken.";
+                StartscreenManager.singleton.CreateGame();
         }
-		RoomscreenManager.singleton.SetFeedback(error);
     }
 
     public override void OnPhotonPlayerConnected(PhotonPlayer player)

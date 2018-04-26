@@ -67,6 +67,8 @@ public class LobbyscreenManager : UIManager
             this.playButton.gameObject.SetActive(false);
             this.playButton.onClick.AddListener(()=>this.OnStartGame());
         }
+
+        UIController.singleton.ShowLoading(false);
     } 
 
     private void OnStartGame()
