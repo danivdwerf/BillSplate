@@ -127,7 +127,9 @@ public class LobbyscreenManager : UIManager
     {
         if(this.roomCode == null)
             return;
-        this.roomCode.text = "Roomcode: " + code;
+        
+        string tmp = this.roomCode.text.Replace("_____", code);
+        this.roomCode.text = tmp;
     }
 
     protected override void OnScreenDisabled()
