@@ -15,4 +15,5 @@ public static class Data
 	public static Object[] PLAYER_ICONS = Resources.LoadAll("Playericons", typeof(Sprite));
 
 	public static RoundsData ROUNDS_DATA;
+	public static AIanswers AI_DATA;
 }

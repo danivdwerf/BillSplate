@@ -12,6 +12,7 @@ public class StartscreenManager : UIManager
     [SerializeField]private VideoPlayer videoPlayer;
     [SerializeField]private RawImage videoTexture;
     [SerializeField]private Button createGame;
+    [SerializeField]private Button settings;
     [SerializeField]private Button aboutGameMaster;
 
     [Space(10)]
@@ -25,7 +26,8 @@ public class StartscreenManager : UIManager
         if(singleton != null && singleton != this)
             Destroy(this);
         singleton = this;
-        
+
+        StartCoroutine(PrepareVideo());  
         this.screenType = ScreenType.STARTSCREEN;
         base.Awake();
     }   
@@ -43,6 +45,9 @@ public class StartscreenManager : UIManager
 
         this.aboutGameMaster.gameObject.SetActive(false);
         this.aboutGameMaster = null;
+
+        this.settings.gameObject.SetActive(false);
+        this.settings = null;
 
         this.clientView.SetActive(true);
         this.joinGame.gameObject.SetActive(true);
@@ -63,19 +68,20 @@ public class StartscreenManager : UIManager
         this.aboutGameClient.gameObject.SetActive(false);
         this.aboutGameClient = null;
 
-        StartCoroutine(PrepareVideo());    
-
         this.masterView.SetActive(true);        
         this.createGame.gameObject.SetActive(true);
         this.aboutGameMaster.gameObject.SetActive(true);
+        this.settings.gameObject.SetActive(true);
     }
 
     private System.Collections.IEnumerator PrepareVideo()
     {
+        this.videoTexture.gameObject.SetActive(false);
         this.videoPlayer.Prepare();
         while(!this.videoPlayer.isPrepared)
             yield return new WaitForEndOfFrame();
         this.videoTexture.texture = this.videoPlayer.texture;
+        this.videoTexture.gameObject.SetActive(true);
         if(this.isEnabled)
         {
             UIController.singleton.ShowLoading(false);
@@ -94,7 +100,8 @@ public class StartscreenManager : UIManager
         {
             this.createGame.onClick.AddListener(this.CreateGame);
             this.aboutGameMaster.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.ABOUTSCREEN));
-            
+            this.settings.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.SETTINGSSCREEN));
+
             if(!this.videoPlayer.isPrepared) UIController.singleton.ShowLoading(true);
             if(!this.videoPlayer.isPlaying) this.videoPlayer.Play();
         }

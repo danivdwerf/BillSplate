@@ -39,8 +39,11 @@ public class NetworkController : Photon.PunBehaviour
         Utilities.JSON.singleton.loadJSON("http://freetimedev.com/gamedata.json", (string json)=>
         {
             RoundsData data = new RoundsData();
+            AIanswers aidata = new AIanswers();
             Utilities.JSON.singleton.ToClass(json, ref data);
+            Utilities.JSON.singleton.ToClass(json, ref aidata);
             Data.ROUNDS_DATA = data;
+            Data.AI_DATA = aidata;
         });
     }
 
@@ -61,10 +64,6 @@ public class NetworkController : Photon.PunBehaviour
 
         LobbyscreenManager.singleton.AddPlayer(player.NickName);
         Host.singleton.AddPlayerToScore(player.ID);
-        if(PhotonNetwork.room.PlayerCount <= 3)
-            return;
-        
-        LobbyscreenManager.singleton.ShowStartbutton(true);
     }
 
     public override void OnJoinedRoom()

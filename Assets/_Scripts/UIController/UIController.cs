@@ -8,7 +8,8 @@ public enum ScreenType
 	LOBBYSCREEN = 2,
 	JOINSCREEN = 3,
 	GAMESCREEN = 4,
-	ABOUTSCREEN = 5
+	ABOUTSCREEN = 5,
+	SETTINGSSCREEN = 6
 };
 
 public class UIController : MonoBehaviour 

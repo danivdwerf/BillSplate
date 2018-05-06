@@ -19,6 +19,9 @@ public class GamescreenManager : UIManager
     [SerializeField]private Text promptClient;
     [SerializeField]private InputField answerfieldClient;
     [SerializeField]private Button submitClient;
+
+    [SerializeField]private Button[] answersClient;
+    [SerializeField]private Text[] answersClientLabel;
     public static System.Action<string> OnSubmitAnswer;
     
     protected override void Awake()
@@ -56,10 +59,11 @@ public class GamescreenManager : UIManager
         this.promptMaster.gameObject.SetActive(true);
         this.promptMaster.text = string.Empty;
 
-        this.answersMaster = null;
-
         this.timer.gameObject.SetActive(false);
         this.timer.text = string.Empty;
+
+        this.answersMaster[0].gameObject.SetActive(false);
+        this.answersMaster[1].gameObject.SetActive(false);
     }
 
     protected override void SetScreenForMobile()
@@ -78,6 +82,8 @@ public class GamescreenManager : UIManager
         this.timer.text = string.Empty;
         this.timer.gameObject.SetActive(false);
         this.timer = null;
+
+        this.answersMaster = null;
 
         this.clientView.SetActive(true);
         
@@ -115,9 +121,32 @@ public class GamescreenManager : UIManager
         this.submitClient.gameObject.SetActive(!removeInput);
     }
 
+    public void StartWaitForAnswers()
+    {
+        StartCoroutine("WaitForAnswers");
+    }
+
+    private System.Collections.IEnumerator WaitForAnswers()
+    {
+        float waitTime = 60.0f;
+        float timer = waitTime;
+        this.timer.gameObject.SetActive(true);
+        this.feedbackMaster.text = "Answer the prompts on you phone.";
+        while(timer > 0.0f)
+        {
+            this.timer.text = Mathf.Round(timer).ToString("00");
+            yield return new WaitForSeconds(1.0f);
+            timer--;
+        }
+        this.timer.gameObject.SetActive(false);
+    }
+
     public void StartVoting(System.Collections.Generic.Dictionary<string, string[]> data)
     {
+        StopCoroutine("WaitForAnswers");
         this.feedbackMaster.text = "Vote for your favourite answer on your phone:";
+        this.answersMaster[0].gameObject.SetActive(true);
+        this.answersMaster[1].gameObject.SetActive(true);
         StartCoroutine(Vote(data, null));
     }
 
@@ -135,12 +164,14 @@ public class GamescreenManager : UIManager
         for(byte i = 0; i < len; i++)
         {
             string currentPrompt = keys[i];
-            string answer1 = data[keys[i]][0];
-            string answer2 = data[keys[i]][1];
+            string answer1 = data[currentPrompt][0];
+            string answer2 = data[currentPrompt][1];
         
             this.promptMaster.text = currentPrompt;
             this.answersMaster[0].text = answer1;
             this.answersMaster[1].text = answer2;
+
+            RPC.singleton.CallVote(currentPrompt, answer1, answer2);
 
             timer = waitTime;
             while(timer > 0.0f)
@@ -159,6 +190,13 @@ public class GamescreenManager : UIManager
         if(callback != null)
             callback();
         yield return null;
+    }
+
+    public void ShowClientVote(string prompt, string answer1, string answer2)
+    {
+        this.promptClient.text = prompt;
+        this.answersClientLabel[0].text = answer1;
+        this.answersClientLabel[1].text = answer2;
     }
 
     private System.Collections.IEnumerator ShowScores()

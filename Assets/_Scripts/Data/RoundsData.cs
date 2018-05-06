@@ -22,3 +22,9 @@ public class Prompt
     public string prompt;
     public string answerPrefix;
 };
+
+[System.Serializable]
+public class AIanswers
+{
+    public string[] answers;
+};

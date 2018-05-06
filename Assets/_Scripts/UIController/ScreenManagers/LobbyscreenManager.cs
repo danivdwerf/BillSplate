@@ -12,22 +12,26 @@ public class LobbyscreenManager : UIManager
     [SerializeField]private GameObject iconPrefab;
     [SerializeField]private Transform wheel;
     [SerializeField]private Text roomCode;
-
+    [SerializeField]private Button playButton;
+    [SerializeField]private Button addAI;
     private List<GameObject> iconHolders;
-    private Button playButton;
 
     [Space(10)]
     [Header("Mobile View")]
     [SerializeField]private GameObject clientView;
+    
+    [Space(10)]
+    [SerializeField]private Button backButton;
+
+    private byte amountOfPlayers;
 
     protected override void Awake()
     {
         if(singleton != null && singleton != this)
             Destroy(this);
         singleton = this;
-
-        this.playButton = this.wheel.GetComponentInChildren<Button>();
         this.screenType = ScreenType.LOBBYSCREEN;
+        this.amountOfPlayers = 0;
         base.Awake();
     }
 
@@ -39,6 +43,8 @@ public class LobbyscreenManager : UIManager
         this.masterView.SetActive(true);
         this.wheel.gameObject.SetActive(true);
         this.roomCode.gameObject.SetActive(true);
+        this.playButton.gameObject.SetActive(false);
+        this.backButton.gameObject.SetActive(true);
 
         this.iconHolders = new List<GameObject>(Data.MAX_PLAYERS);
         this.CreateIconHolders();
@@ -54,6 +60,8 @@ public class LobbyscreenManager : UIManager
 
         this.roomCode.gameObject.SetActive(false);
         this.roomCode = null;
+
+        this.backButton.gameObject.SetActive(true);
         
         this.iconPrefab = null;
         this.iconHolders = null;
@@ -62,16 +70,29 @@ public class LobbyscreenManager : UIManager
 
     protected override void OnScreenEnabled()
     {
-        if(playButton != null)
+        if(this.masterView != null)
         {
-            this.playButton.gameObject.SetActive(false);
-            this.playButton.onClick.AddListener(()=>this.OnStartGame());
+            this.playButton.onClick.AddListener(this.OnStartButtonClicked);
+            this.backButton.onClick.AddListener(()=>
+            {
+                PhotonNetwork.LeaveRoom();
+                UIController.singleton.GoToScreen(ScreenType.STARTSCREEN);
+            });
+            this.addAI.onClick.AddListener(Host.singleton.CreateAI);
         }
 
+        if(this.clientView != null)
+        {
+            this.backButton.onClick.AddListener(()=>
+            {
+                PhotonNetwork.LeaveRoom();
+                UIController.singleton.GoToScreen(ScreenType.JOINSCREEN);
+            });
+        }
         UIController.singleton.ShowLoading(false);
     } 
 
-    private void OnStartGame()
+    private void OnStartButtonClicked()
     {
         PhotonNetwork.room.IsOpen = false;
         RPC.singleton.CallGoToGame();
@@ -112,9 +133,13 @@ public class LobbyscreenManager : UIManager
         textObject.GetComponent<Transitions.MoveTo>().Move(null);
 
         GameObject iconObject = holder.transform.GetChild(1).gameObject;
-        iconObject.GetComponent<Image>().sprite = (Sprite)Data.PLAYER_ICONS[PhotonNetwork.room.PlayerCount-1];
+        iconObject.GetComponent<Image>().sprite = (Sprite)Data.PLAYER_ICONS[this.amountOfPlayers];
         iconObject.SetActive(true);
-    }
+        this.amountOfPlayers++;
+
+        if(this.amountOfPlayers == 3)
+            this.ShowStartbutton(true);
+    }  
 
     public void ShowStartbutton(bool value)
     {

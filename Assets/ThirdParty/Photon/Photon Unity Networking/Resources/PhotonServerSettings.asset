@@ -46,4 +46,6 @@ MonoBehaviour:
   - AddPlayerToLobby
   - ReceiveAnswers
   - ReceiveQuestions
+  - TimeIsOver
+  - ClientVote
   DisableAutoOpenWizard: 1
