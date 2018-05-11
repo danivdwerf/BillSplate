@@ -66,6 +66,8 @@ public class LobbyscreenManager : UIManager
         this.iconPrefab = null;
         this.iconHolders = null;
         this.playButton = null;
+
+        this.clientView.SetActive(true);
     }
 
     protected override void OnScreenEnabled()

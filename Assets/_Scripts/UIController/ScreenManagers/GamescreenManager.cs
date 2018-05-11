@@ -197,6 +197,15 @@ public class GamescreenManager : UIManager
         this.promptClient.text = prompt;
         this.answersClientLabel[0].text = answer1;
         this.answersClientLabel[1].text = answer2;
+
+        this.answersClient[0].gameObject.SetActive(true);
+        this.answersClient[1].gameObject.SetActive(true);
+
+        this.answersClient[0].onClick.RemoveAllListeners();
+        this.answersClient[1].onClick.RemoveAllListeners();
+
+        // this.answersClient[0].onClick.AddListener();
+        // this.answersClient[1].onClick.AddListener();
     }
 
     private System.Collections.IEnumerator ShowScores()

@@ -16,12 +16,12 @@ public class RPC : Photon.PunBehaviour
         this.photonView.RPC("GoToGame", PhotonTargets.All, null);
     }
 
-    public void SendQuestions(byte[] ids, string[] questions, PhotonPlayer target)
+    public void SendQuestions(int[] ids, string[] questions, PhotonPlayer target)
     {
         this.photonView.RPC("ReceiveQuestions", target, ids, questions);
     }
 
-    public void SendAnswers(byte[] ids, string[] answers)
+    public void SendAnswers(int[] ids, string[] answers)
     {
         this.photonView.RPC("ReceiveAnswers", PhotonTargets.MasterClient, ids, answers);
     }
@@ -36,6 +36,8 @@ public class RPC : Photon.PunBehaviour
         this.photonView.RPC("ClientVote", PhotonTargets.Others, prompt, answer1, answer2);
     }
 
+    // public void SendVote()
+
     [PunRPC]
     public void GoToGame()
     {
@@ -43,13 +45,13 @@ public class RPC : Photon.PunBehaviour
     }
 
     [PunRPC]
-    public void ReceiveQuestions(byte[] ids, string[] questions)
+    public void ReceiveQuestions(int[] ids, string[] questions)
     {
         Client.singleton.SetPrompts(ids, questions);
     }
 
     [PunRPC]
-    public void ReceiveAnswers(byte[] ids, string[] answers)
+    public void ReceiveAnswers(int[] ids, string[] answers)
     {
         Host.singleton.ReceiveAnswers(ids, answers);
     }

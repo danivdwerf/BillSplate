@@ -8,7 +8,6 @@ public class StartscreenManager : UIManager
 
     [Header("Computer")]
     [SerializeField]private GameObject masterView;
-    [SerializeField]private Transitions.MoveTo headerMove;
     [SerializeField]private VideoPlayer videoPlayer;
     [SerializeField]private RawImage videoTexture;
     [SerializeField]private Button createGame;
@@ -86,7 +85,6 @@ public class StartscreenManager : UIManager
         {
             UIController.singleton.ShowLoading(false);
             this.videoPlayer.Play();
-            this.headerMove.Move(null);
         }
         yield return null;
     }

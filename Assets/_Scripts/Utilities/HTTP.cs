@@ -11,6 +11,7 @@ namespace Utilities
             POST = (1<<0),
             PUT = (1<<1)
         }
+        
         public static HTTP instance;
         private void Awake ()
         {

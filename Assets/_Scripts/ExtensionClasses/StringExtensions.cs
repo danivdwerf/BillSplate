@@ -19,7 +19,7 @@ public static class StringExtensions
 	{
 		int whiteSpaceLen = 0;
 		int len = original.Length;
-		for(int i = 0; i < len; i++)
+		for(byte i = 0; i < len; i++)
 		{
 			if(char.IsWhiteSpace(original[i]))
 				whiteSpaceLen++;
@@ -33,7 +33,7 @@ public static class StringExtensions
 		char[] chars = original.ToCharArray();
 		System.Random rand = new System.Random();
 
-		for (int i = len; i > 0; i--)
+		for(int i = len; i > 0; i--)
 		{
 			int index = rand.Next(i);
 			char tmp = chars[index];

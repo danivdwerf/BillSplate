@@ -5,7 +5,7 @@ public class Client : MonoBehaviour
 
     private string[] currentPrompts;
     private string[] answers;
-    private byte[] promptIDs;
+    private int[] promptIDs;
     private byte promptIndex;
     
     private void Awake()
@@ -20,7 +20,7 @@ public class Client : MonoBehaviour
         GamescreenManager.OnSubmitAnswer += this.SetAnswer;
     }
 
-    public void SetPrompts(byte[] ids, string[] prompts)
+    public void SetPrompts(int[] ids, string[] prompts)
     {
         this.currentPrompts = new string[2];
         this.currentPrompts[0] = prompts[0];

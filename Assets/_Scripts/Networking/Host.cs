@@ -9,7 +9,7 @@ public class Host : Photon.PunBehaviour
 	private byte currentRound;
     private string[] currentPrompts;
     private Dictionary<int, int> scores;
-    private Dictionary<byte, string[]> currentAnswers;
+    private Dictionary<int, string[]> currentAnswers;
     private byte amountOfAnswers;
     private List<AI> ais;
 
@@ -37,9 +37,9 @@ public class Host : Photon.PunBehaviour
         LobbyscreenManager.singleton.AddPlayer("Computer");
     }
 
-    public void ReceiveAnswers(byte[] questionIDs, string[] answers)
+    public void ReceiveAnswers(int[] questionIDs, string[] answers)
     {
-        byte key1 = questionIDs[0];
+        int key1 = questionIDs[0];
         string value1 = answers[0];
         if(!currentAnswers.ContainsKey(key1))
         {
@@ -50,7 +50,7 @@ public class Host : Photon.PunBehaviour
         else this.currentAnswers[key1][1] = value1;
         this.amountOfAnswers++;
 
-        byte key2 = questionIDs[1];
+        int key2 = questionIDs[1];
         string value2 = answers[1];
         if(!currentAnswers.ContainsKey(key2))
         {
@@ -65,7 +65,7 @@ public class Host : Photon.PunBehaviour
             return;
 
         Dictionary<string, string[]> promptAndAnswer = new Dictionary<string, string[]>();
-        byte len = (byte)this.currentPrompts.Length;
+        int len = this.currentPrompts.Length;
         for(byte i = 0; i < len; i++)
             promptAndAnswer.Add(this.currentPrompts[i], currentAnswers[i]);
 
@@ -81,14 +81,14 @@ public class Host : Photon.PunBehaviour
         this.amountOfAnswers = 0;
 
 		PhotonPlayer[] players = PhotonNetwork.playerList;
-        byte amountOfPlayers = (byte)(players.Length-1);
-        byte amountOfAI = (byte)this.ais.Count;
+        int amountOfPlayers = players.Length-1;
+        int amountOfAI = this.ais.Count;
 
 		List<Prompt> promptsData = Data.ROUNDS_DATA.rounds[this.currentRound].prompts;
-        byte promptsLen = (byte)promptsData.Count;
+        int promptsLen = promptsData.Count;
 
         List<string> currentPrompts = new List<string>();
-		byte promptsNeeded = (byte)(amountOfPlayers+amountOfAI);
+		int promptsNeeded = amountOfPlayers + amountOfAI;
 		
         for(byte i = 0; i < promptsNeeded; i++)
         {
@@ -99,14 +99,14 @@ public class Host : Photon.PunBehaviour
         }
 
 		int index = 0;
-        List<byte[]> questionIDs = new List<byte[]>();
+        List<int[]> questionIDs = new List<int[]>();
         List<string[]> prompts = new List<string[]>();
         for(byte i = 0; i < promptsNeeded; i++)
         {   
             if(i<amountOfPlayers && players[i].IsMasterClient)
             {
                 prompts.Add(new string[2]);
-                questionIDs.Add(new byte[2]);
+                questionIDs.Add(new int[2]);
                 continue;
             }
 
@@ -115,15 +115,15 @@ public class Host : Photon.PunBehaviour
 			tmp[1] = currentPrompts[(index==promptsNeeded-1) ? 0 : index+1];
             prompts.Add(tmp);
 
-            byte[] ids = new byte[2];
-            ids[0] = (byte)index;
-            ids[1] = (byte)((index==promptsNeeded-1) ? 0 : index+1);
+            int[] ids = new int[2];
+            ids[0] = index;
+            ids[1] = ((index==promptsNeeded-1) ? 0 : index+1);
             questionIDs.Add(ids);
 			index++;
         }
 
         this.currentPrompts = currentPrompts.ToArray();
-        this.currentAnswers = new Dictionary<byte, string[]>(); 
+        this.currentAnswers = new Dictionary<int, string[]>(); 
 
         for(byte i = 0; i < amountOfPlayers; i++)
         {
