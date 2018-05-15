@@ -2,15 +2,37 @@
 
 using System.Collections.Generic;
 
+public struct Question
+{
+    public int index{get;set;}
+    public Prompt[] prompts{get;set;}
+    public Answer[] answers{get;set;}
+};
+
+public struct Prompt
+{
+    public int id{get;set;}
+    public string text{get;set;}
+};
+
+[System.Serializable]
+public struct Answer
+{
+    public string text{get;set;}
+    public int playerID{get;set;}
+    public int votes{get;set;}
+};
+
 public class Host : Photon.PunBehaviour 
 {
 	public static Host singleton;
 
-	private byte currentRound;
-    private string[] currentPrompts;
+	private int currentRound;
+    private Answer[] currentVotables;
+    private Question[] currentPrompts;
     private Dictionary<int, int> scores;
     private Dictionary<int, string[]> currentAnswers;
-    private byte amountOfAnswers;
+    private int amountOfAnswers;
     private List<AI> ais;
 
 	private void Awake()
@@ -37,107 +59,153 @@ public class Host : Photon.PunBehaviour
         LobbyscreenManager.singleton.AddPlayer("Computer");
     }
 
-    public void ReceiveAnswers(int[] questionIDs, string[] answers)
+    public void Vote(int index)
     {
-        int key1 = questionIDs[0];
-        string value1 = answers[0];
-        if(!currentAnswers.ContainsKey(key1))
-        {
-            string[] tmp = new string[2];
-            tmp[0] = value1;
-            this.currentAnswers.Add(key1, tmp);
-        }
-        else this.currentAnswers[key1][1] = value1;
-        this.amountOfAnswers++;
+        this.currentVotables[index].votes++;
+    }
 
-        int key2 = questionIDs[1];
-        string value2 = answers[1];
-        if(!currentAnswers.ContainsKey(key2))
+    public void SetVotables(Answer answer1, Answer answer2)
+    {
+        this.currentVotables = new Answer[2];
+        this.currentVotables[0] = answer1;
+        this.currentVotables[1] = answer2;
+    }
+
+    public Answer GetMostVoted()
+    {
+        Answer answer1 = this.currentVotables[0];
+        Answer answer2 = this.currentVotables[1];
+
+        if(answer1.votes > answer2.votes)
+            return answer1;
+        else
+            return answer2;
+    }
+
+    public void ReceiveAnswers(string[] answertext, int playerID)
+    {
+        int? index = null;
+        int len = this.currentPrompts.Length;
+        for(int i = 0; i < len; i++)
         {
-            string[] tmp = new string[2];
-            tmp[0] = value2;
-            this.currentAnswers.Add(key2, tmp);
+            Question curr = this.currentPrompts[i];
+            if(curr.answers[0].playerID != playerID)
+                continue;
+            
+            index = i;
+            break;
         }
-        else this.currentAnswers[key2][1] = value2;
-        this.amountOfAnswers++;
+
+        if(index == null)
+            return;
+        
+        this.currentPrompts[(int)index].answers[0].text = answertext[0];
+        this.currentPrompts[(int)index].answers[1].text = answertext[1];
+        this.amountOfAnswers += 2;
 
         if(this.amountOfAnswers < this.currentPrompts.Length*2)
             return;
 
-        Dictionary<string, string[]> promptAndAnswer = new Dictionary<string, string[]>();
-        int len = this.currentPrompts.Length;
-        for(byte i = 0; i < len; i++)
-            promptAndAnswer.Add(this.currentPrompts[i], currentAnswers[i]);
-
-        GamescreenManager.singleton.StartVoting(promptAndAnswer);
+        GamescreenManager.singleton.StartVoting(this.currentPrompts);
     }
 
-    public void UpdateRound(byte? roundNumber)
+    public void UpdateRound(int? roundNumber)
     {
         if(Data.ROUNDS_DATA == null)
             return;
 
-        this.currentRound = (roundNumber == null) ? (byte)(this.currentRound+1) : (byte)roundNumber;
+        this.currentRound = (roundNumber == null) ? this.currentRound+1 : (int)roundNumber;
         this.amountOfAnswers = 0;
-
+        
+        //Collect players
 		PhotonPlayer[] players = PhotonNetwork.playerList;
         int amountOfPlayers = players.Length-1;
         int amountOfAI = this.ais.Count;
 
-		List<Prompt> promptsData = Data.ROUNDS_DATA.rounds[this.currentRound].prompts;
-        int promptsLen = promptsData.Count;
+        //Collect prompts
+        int promptsNeeded = amountOfPlayers + amountOfAI;
+        string[] currentPrompts = this.GetRandomPrompts(promptsNeeded);
+        Question[] currentQuestions = new Question[promptsNeeded];
 
-        List<string> currentPrompts = new List<string>();
-		int promptsNeeded = amountOfPlayers + amountOfAI;
-		
-        for(byte i = 0; i < promptsNeeded; i++)
-        {
-            int randomIndex = Random.Range(0, promptsLen);
-            currentPrompts.Add(promptsData[randomIndex].prompt);
-            promptsData.RemoveAt(randomIndex);
-            promptsLen--;
-        }
-
+        //Assign prompt ID's
 		int index = 0;
-        List<int[]> questionIDs = new List<int[]>();
-        List<string[]> prompts = new List<string[]>();
-        for(byte i = 0; i < promptsNeeded; i++)
-        {   
-            if(i<amountOfPlayers && players[i].IsMasterClient)
+        for(int i = 0; i < promptsNeeded; i++)
+        {
+            Question question = new Question();
+            question.index = i;
+
+            if(i < amountOfPlayers && players[i].IsMasterClient)
             {
-                prompts.Add(new string[2]);
-                questionIDs.Add(new int[2]);
+                currentQuestions[i] = question;
                 continue;
             }
+            
+            Prompt[] prompts = new Prompt[2];
 
-            string[] tmp = new string[2];
-			tmp[0] = currentPrompts[index];
-			tmp[1] = currentPrompts[(index==promptsNeeded-1) ? 0 : index+1];
-            prompts.Add(tmp);
+            Prompt prompt1 = new Prompt();
+            prompt1.id = index;
+            prompt1.text = currentPrompts[index];
+            prompts[0] = prompt1;
 
-            int[] ids = new int[2];
-            ids[0] = index;
-            ids[1] = ((index==promptsNeeded-1) ? 0 : index+1);
-            questionIDs.Add(ids);
+            Prompt prompt2 = new Prompt();
+            prompt2.id = ((index==promptsNeeded-1) ? 0 : index+1);
+            prompt2.text = currentPrompts[(index==promptsNeeded-1) ? 0 : index+1];
+            prompts[1] = prompt2;
+
+            question.prompts = prompts;
+
+            Answer[] answers = new Answer[2];
+            answers[0] = new Answer();
+            answers[1] = new Answer();
+            question.answers = answers;
+
+            currentQuestions[i] = question;
 			index++;
         }
 
-        this.currentPrompts = currentPrompts.ToArray();
-        this.currentAnswers = new Dictionary<int, string[]>(); 
+        this.currentPrompts = currentQuestions;
 
-        for(byte i = 0; i < amountOfPlayers; i++)
+        for(int i = 0; i < amountOfPlayers; i++)
         {
             if(players[i].IsMasterClient)
                 continue;
-            RPC.singleton.SendQuestions(questionIDs[i], prompts[i], players[i]);
+
+            this.currentPrompts[i].answers[0].playerID = players[i].ID;
+            this.currentPrompts[i].answers[1].playerID = players[i].ID;
+            
+            string[] prompts = new string[2];
+            prompts[0] = currentQuestions[i].prompts[0].text;
+            prompts[1] = currentQuestions[i].prompts[1].text;
+
+            RPC.singleton.SendQuestions(prompts, players[i]);
         }
 
-        for(byte i = 0; i < amountOfAI; i++)
+        for(int i = 0; i < amountOfAI; i++)
         {
-            byte realIndex = (byte)((amountOfPlayers)+i);
+            int realIndex = amountOfPlayers + i;
+            int aiIndex = (-2 - i);
+            this.currentPrompts[realIndex].answers[0].playerID = aiIndex;
+            this.currentPrompts[realIndex].answers[1].playerID = aiIndex;
+
             string[] answers = this.ais[i].GetAnswers();
-            this.ReceiveAnswers(questionIDs[realIndex], answers);
+            this.ReceiveAnswers(answers, aiIndex);
         }
         GamescreenManager.singleton.StartWaitForAnswers();
+    }
+
+    private string[] GetRandomPrompts(int amountNeeded)
+    {
+        List<PromptData> promptsData = Data.ROUNDS_DATA.rounds[this.currentRound].prompts;
+        string[] currentPrompts = new string[amountNeeded];
+        int promptsLen = promptsData.Count;
+		
+        for(int i = 0; i < amountNeeded; i++)
+        {
+            int randomIndex = Random.Range(0, promptsLen);
+            currentPrompts[i] = promptsData[randomIndex].prompt;
+            promptsData.RemoveAt(randomIndex);
+            promptsLen--;
+        }
+        return currentPrompts;
     }
 }

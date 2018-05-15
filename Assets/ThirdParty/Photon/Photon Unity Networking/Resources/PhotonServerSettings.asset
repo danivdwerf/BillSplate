@@ -48,4 +48,5 @@ MonoBehaviour:
   - ReceiveQuestions
   - TimeIsOver
   - ClientVote
+  - Vote
   DisableAutoOpenWizard: 1

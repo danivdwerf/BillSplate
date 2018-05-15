@@ -23,6 +23,9 @@ public class GamescreenManager : UIManager
     [SerializeField]private Button[] answersClient;
     [SerializeField]private Text[] answersClientLabel;
     public static System.Action<string> OnSubmitAnswer;
+
+    private int currentPromptIndex;
+    public int CurrentPromptIndex{get{return this.currentPromptIndex;}}
     
     protected override void Awake()
     {
@@ -141,7 +144,7 @@ public class GamescreenManager : UIManager
         this.timer.gameObject.SetActive(false);
     }
 
-    public void StartVoting(System.Collections.Generic.Dictionary<string, string[]> data)
+    public void StartVoting(Question[] data)
     {
         StopCoroutine("WaitForAnswers");
         this.feedbackMaster.text = "Vote for your favourite answer on your phone:";
@@ -150,28 +153,47 @@ public class GamescreenManager : UIManager
         StartCoroutine(Vote(data, null));
     }
 
-    private System.Collections.IEnumerator Vote(System.Collections.Generic.Dictionary<string, string[]> data, System.Action callback)
+    private System.Collections.IEnumerator Vote(Question[] data, System.Action callback)
     {
         float waitTime = 20.0f;
         float timer = waitTime;
 
-        byte len = (byte)data.Keys.Count;
-        string[] keys = new string[len];
-        data.Keys.CopyTo(keys, 0);
-
+        int promptIndex = 0;
+        int len = data.Length;
         this.timer.gameObject.SetActive(true);
-
         for(byte i = 0; i < len; i++)
-        {
-            string currentPrompt = keys[i];
-            string answer1 = data[currentPrompt][0];
-            string answer2 = data[currentPrompt][1];
-        
-            this.promptMaster.text = currentPrompt;
-            this.answersMaster[0].text = answer1;
-            this.answersMaster[1].text = answer2;
+        {   
+            int currID = data[i].prompts[promptIndex].id;
+            string prompt = data[i].prompts[promptIndex].text;
+            Answer answer1 = data[i].answers[promptIndex];
+            Answer answer2 = default(Answer);
 
-            RPC.singleton.CallVote(currentPrompt, answer1, answer2);
+            for(int j = 0; j < len*2; j++)
+            {
+                if(i == j) continue;
+
+                if(data[j].prompts[0].id == currID)
+                {
+                    answer2 = data[j].answers[0];
+                    break;
+                }
+
+                if(data[j].prompts[1].id == currID)
+                {
+                    answer2 = data[j].answers[1];
+                    break;
+                }
+            }
+
+            Host.singleton.SetVotables(answer1, answer2);
+
+            string answer1Text = answer1.text;
+            string answer2Text = answer2.text;
+        
+            this.promptMaster.text = prompt;
+            this.answersMaster[0].text = answer1Text;
+            this.answersMaster[1].text = answer2Text;
+            RPC.singleton.CallVote(prompt, answer1Text, answer2Text);
 
             timer = waitTime;
             while(timer > 0.0f)
@@ -204,13 +226,14 @@ public class GamescreenManager : UIManager
         this.answersClient[0].onClick.RemoveAllListeners();
         this.answersClient[1].onClick.RemoveAllListeners();
 
-        // this.answersClient[0].onClick.AddListener();
-        // this.answersClient[1].onClick.AddListener();
+        this.answersClient[0].onClick.AddListener(()=> RPC.singleton.SendVote(0));
+        this.answersClient[1].onClick.AddListener(()=> RPC.singleton.SendVote(1));
     }
 
     private System.Collections.IEnumerator ShowScores()
     {
-        Debug.Log("Set the scores and animate them in.");
+        Answer winner = Host.singleton.GetMostVoted();
+        Debug.Log(winner.text + " WINS!");
         yield return null;
     }
 

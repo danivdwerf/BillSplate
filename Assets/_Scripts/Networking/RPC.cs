@@ -16,14 +16,14 @@ public class RPC : Photon.PunBehaviour
         this.photonView.RPC("GoToGame", PhotonTargets.All, null);
     }
 
-    public void SendQuestions(int[] ids, string[] questions, PhotonPlayer target)
+    public void SendQuestions(string[] prompts, PhotonPlayer target)
     {
-        this.photonView.RPC("ReceiveQuestions", target, ids, questions);
+        this.photonView.RPC("ReceiveQuestions", target, prompts);
     }
 
-    public void SendAnswers(int[] ids, string[] answers)
+    public void SendAnswers(string[] answers, int playerID)
     {
-        this.photonView.RPC("ReceiveAnswers", PhotonTargets.MasterClient, ids, answers);
+        this.photonView.RPC("ReceiveAnswers", PhotonTargets.MasterClient, answers, playerID);
     }
 
     public void CallTimeIsOver()
@@ -36,7 +36,10 @@ public class RPC : Photon.PunBehaviour
         this.photonView.RPC("ClientVote", PhotonTargets.Others, prompt, answer1, answer2);
     }
 
-    // public void SendVote()
+    public void SendVote(int index)
+    {
+        this.photonView.RPC("Vote", PhotonTargets.MasterClient, index);
+    }
 
     [PunRPC]
     public void GoToGame()
@@ -45,15 +48,15 @@ public class RPC : Photon.PunBehaviour
     }
 
     [PunRPC]
-    public void ReceiveQuestions(int[] ids, string[] questions)
+    public void ReceiveQuestions(string[] prompts)
     {
-        Client.singleton.SetPrompts(ids, questions);
+        Client.singleton.SetPrompts(prompts);
     }
 
     [PunRPC]
-    public void ReceiveAnswers(int[] ids, string[] answers)
+    public void ReceiveAnswers(string[] answers, int playerID)
     {
-        Host.singleton.ReceiveAnswers(ids, answers);
+        Host.singleton.ReceiveAnswers(answers, playerID);
     }
 
     [PunRPC]
@@ -66,5 +69,11 @@ public class RPC : Photon.PunBehaviour
     public void ClientVote(string prompt, string answer1, string answer2)
     {
         GamescreenManager.singleton.ShowClientVote(prompt, answer1, answer2);
+    }
+
+    [PunRPC]
+    public void Vote(int index)
+    {
+        Host.singleton.Vote(index);
     }
 }

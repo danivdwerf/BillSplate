@@ -4,9 +4,8 @@ public class Client : MonoBehaviour
     public static Client singleton;
 
     private string[] currentPrompts;
-    private string[] answers;
-    private int[] promptIDs;
-    private byte promptIndex;
+    private string[] myAnswers;
+    private int promptIndex;
     
     private void Awake()
     {
@@ -20,17 +19,11 @@ public class Client : MonoBehaviour
         GamescreenManager.OnSubmitAnswer += this.SetAnswer;
     }
 
-    public void SetPrompts(int[] ids, string[] prompts)
+    public void SetPrompts(string[] prompts)
     {
-        this.currentPrompts = new string[2];
-        this.currentPrompts[0] = prompts[0];
-        this.currentPrompts[1] = prompts[1];
-        
-        this.answers = new string[2];
-
-        this.promptIDs = ids;
+        this.myAnswers = new string[2];
+        this.currentPrompts = prompts;
         this.promptIndex = 0;
-
         GamescreenManager.singleton.SetQuestion(prompts[0], false);
     }
 
@@ -45,13 +38,13 @@ public class Client : MonoBehaviour
         else
         {
             GamescreenManager.singleton.SetQuestion("Wait for the other players", true);
-            RPC.singleton.SendAnswers(this.promptIDs, this.answers);
+            RPC.singleton.SendAnswers(this.myAnswers, PhotonNetwork.player.ID);
         }
     }
 
     public void SetAnswer(string answer)
     {
-        this.answers[this.promptIndex] = answer;
+        this.myAnswers[this.promptIndex] = answer;
         this.UpdatePrompt();
     }
 

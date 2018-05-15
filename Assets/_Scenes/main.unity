@@ -1174,7 +1174,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &328425192
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3503,7 +3503,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &796346988
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5079,7 +5079,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   masterView: {fileID: 174497031}
-  headerMove: {fileID: 0}
   videoPlayer: {fileID: 174497033}
   videoTexture: {fileID: 174497035}
   createGame: {fileID: 1872670226}
@@ -5158,7 +5157,7 @@ MonoBehaviour:
   texture: {fileID: 1518086865}
   clips:
   - {fileID: 32900000, guid: c42114c6f31974b46ade499a63261d13, type: 3}
-  skip: 0
+  skip: 1
 --- !u!1 &1477633055
 GameObject:
   m_ObjectHideFlags: 0
@@ -6969,7 +6968,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1923133855
 RectTransform:
   m_ObjectHideFlags: 0

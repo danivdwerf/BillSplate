@@ -12,15 +12,14 @@ public class Round
     public int id;
     public string title;
     public int maxScore;
-    public List<Prompt> prompts = new List<Prompt>();
+    public List<PromptData> prompts = new List<PromptData>();
 };
 
 [System.Serializable]
-public class Prompt
+public class PromptData
 {
     public int id;
     public string prompt;
-    public string answerPrefix;
 };
 
 [System.Serializable]
