@@ -8,8 +8,6 @@ public class StartscreenManager : UIManager
 
     [Header("Computer")]
     [SerializeField]private GameObject masterView;
-    [SerializeField]private VideoPlayer videoPlayer;
-    [SerializeField]private RawImage videoTexture;
     [SerializeField]private Button createGame;
     [SerializeField]private Button settings;
     [SerializeField]private Button aboutGameMaster;
@@ -26,7 +24,6 @@ public class StartscreenManager : UIManager
             Destroy(this);
         singleton = this;
 
-        StartCoroutine(PrepareVideo());  
         this.screenType = ScreenType.STARTSCREEN;
         base.Awake();
     }   
@@ -51,6 +48,8 @@ public class StartscreenManager : UIManager
         this.clientView.SetActive(true);
         this.joinGame.gameObject.SetActive(true);
         this.aboutGameClient.gameObject.SetActive(true);
+
+        LavaManager.singleton.SetScreen(LavaManager.LavaScreen.Mobile);
     }
 
     /// <summary>
@@ -71,22 +70,8 @@ public class StartscreenManager : UIManager
         this.createGame.gameObject.SetActive(true);
         this.aboutGameMaster.gameObject.SetActive(true);
         this.settings.gameObject.SetActive(true);
-    }
 
-    private System.Collections.IEnumerator PrepareVideo()
-    {
-        this.videoTexture.gameObject.SetActive(false);
-        this.videoPlayer.Prepare();
-        while(!this.videoPlayer.isPrepared)
-            yield return new WaitForEndOfFrame();
-        this.videoTexture.texture = this.videoPlayer.texture;
-        this.videoTexture.gameObject.SetActive(true);
-        if(this.isEnabled)
-        {
-            UIController.singleton.ShowLoading(false);
-            this.videoPlayer.Play();
-        }
-        yield return null;
+        LavaManager.singleton.SetScreen(LavaManager.LavaScreen.Desktop);
     }
 
     /// <summary>
@@ -99,14 +84,13 @@ public class StartscreenManager : UIManager
             this.createGame.onClick.AddListener(this.CreateGame);
             this.aboutGameMaster.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.ABOUTSCREEN));
             this.settings.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.SETTINGSSCREEN));
-
-            if(!this.videoPlayer.isPrepared) UIController.singleton.ShowLoading(true);
-            if(!this.videoPlayer.isPlaying) this.videoPlayer.Play();
+            LavaManager.singleton.StartPlaying(this.masterView.transform);
         }
         else
         {
             this.joinGame.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.JOINSCREEN));
             this.aboutGameClient.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.ABOUTSCREEN));
+            LavaManager.singleton.StartPlaying(this.clientView.transform);
         }
     }
 

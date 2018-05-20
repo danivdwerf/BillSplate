@@ -1,18 +1,11 @@
 fileFormatVersion: 2
-guid: 4b54bc44b7cba462595069385a9b21ec
-timeCreated: 1525800671
+guid: e89e663c3021c40e3bd91a9468d4926f
+timeCreated: 1526844270
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Sniff_0000_Layer-1
-    21300002: Sniff_0001_Layer-2
-    21300004: Sniff_0002_Layer-3
-    21300006: Sniff_0003_Layer-4
-    21300008: Sniff_0004_Layer-5
-    21300010: Sniff_0005_Layer-6
-    21300012: Sniff_0006_Layer-7
-    21300014: Sniff_0007_Layer-8
-    21300016: Sniff_0008_Layer-9
+    21300000: title_0
+    21300002: title_1
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -120,131 +113,33 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sniff_0000_Layer-1
+      name: title_0
       rect:
         serializedVersion: 2
-        x: 608
-        y: 1650
-        width: 605
-        height: 397
+        x: 0
+        y: 212
+        width: 1084
+        height: 185
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
     - serializedVersion: 2
-      name: Sniff_0001_Layer-2
+      name: title_1
       rect:
         serializedVersion: 2
-        x: 1
-        y: 1642
-        width: 605
-        height: 405
+        x: 0
+        y: 27
+        width: 1084
+        height: 185
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: Sniff_0002_Layer-3
-      rect:
-        serializedVersion: 2
-        x: 1215
-        y: 1650
-        width: 605
-        height: 397
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: Sniff_0003_Layer-4
-      rect:
-        serializedVersion: 2
-        x: 608
-        y: 1256
-        width: 605
-        height: 392
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: Sniff_0004_Layer-5
-      rect:
-        serializedVersion: 2
-        x: 1
-        y: 1248
-        width: 605
-        height: 392
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: Sniff_0005_Layer-6
-      rect:
-        serializedVersion: 2
-        x: 1215
-        y: 1256
-        width: 605
-        height: 392
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: Sniff_0006_Layer-7
-      rect:
-        serializedVersion: 2
-        x: 608
-        y: 862
-        width: 605
-        height: 392
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: Sniff_0007_Layer-8
-      rect:
-        serializedVersion: 2
-        x: 1
-        y: 854
-        width: 604
-        height: 392
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-    - serializedVersion: 2
-      name: Sniff_0008_Layer-9
-      rect:
-        serializedVersion: 2
-        x: 1215
-        y: 862
-        width: 604
-        height: 392
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
     outline: []
     physicsShape: []
   spritePackingTag: 
