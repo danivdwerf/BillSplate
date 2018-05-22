@@ -6,9 +6,10 @@ public abstract class UIManager : MonoBehaviour
 	protected bool isEnabled;
 	public bool Enabled{get{return this.isEnabled;}}
 
-	protected virtual void Awake()
-	{
+	protected virtual void Awake(){}
 
+	protected virtual void Start()
+	{
 		#if UNITY_EDITOR
         this.SetScreenForComputer();
 		#elif UNITY_IOS || UNITY_ANDROID
@@ -17,6 +18,7 @@ public abstract class UIManager : MonoBehaviour
         this.SetScreenForComputer();
         #endif
 	}
+
 	private void OnEnable() 
 	{
 		UIController.onScreenChanged += this.OnScreenChanged;

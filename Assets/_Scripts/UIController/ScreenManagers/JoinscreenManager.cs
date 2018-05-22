@@ -21,7 +21,6 @@ public class JoinscreenManager : UIManager
         singleton = this;
         
         this.screenType = ScreenType.JOINSCREEN;
-        base.Awake();
     }
 
     protected override void OnScreenEnabled()

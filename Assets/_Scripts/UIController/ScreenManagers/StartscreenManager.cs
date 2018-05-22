@@ -25,7 +25,6 @@ public class StartscreenManager : UIManager
         singleton = this;
 
         this.screenType = ScreenType.STARTSCREEN;
-        base.Awake();
     }   
 
     /// <summary>
@@ -82,8 +81,8 @@ public class StartscreenManager : UIManager
         if(this.masterView != null)
         {
             this.createGame.onClick.AddListener(this.CreateGame);
-            this.aboutGameMaster.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.ABOUTSCREEN));
-            this.settings.onClick.AddListener(()=>UIController.singleton.GoToScreen(ScreenType.SETTINGSSCREEN));
+            this.aboutGameMaster.onClick.AddListener(()=> UIController.singleton.GoToScreen(ScreenType.ABOUTSCREEN));
+            this.settings.onClick.AddListener(()=> UIController.singleton.GoToScreen(ScreenType.SETTINGSSCREEN));
             LavaManager.singleton.StartPlaying(this.masterView.transform);
         }
         else

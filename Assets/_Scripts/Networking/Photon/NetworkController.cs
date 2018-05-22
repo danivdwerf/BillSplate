@@ -19,13 +19,19 @@ public class NetworkController : Photon.PunBehaviour
 
     public override void OnLeftRoom()
     {
+        if(Host.singleton != null)
+        {
+            UIController.singleton.GoToScreen(ScreenType.STARTSCREEN);
+            Host.Destroy(Host.singleton);
+            return;
+        }
         UIController.singleton.GoToScreen(ScreenType.JOINSCREEN);
     }
 
     public override void OnJoinedLobby()
     {
         if(SplashScreenManager.singleton.Enabled)
-            SplashScreenManager.OnSplashDone = ()=>UIController.singleton.GoToScreen(ScreenType.STARTSCREEN);
+            SplashScreenManager.OnSplashDone = ()=> UIController.singleton.GoToScreen(ScreenType.STARTSCREEN);
         else
         {
             UIController.singleton.GoToScreen(ScreenType.STARTSCREEN);

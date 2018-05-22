@@ -32,7 +32,6 @@ public class LobbyscreenManager : UIManager
         singleton = this;
         this.screenType = ScreenType.LOBBYSCREEN;
         this.amountOfPlayers = 0;
-        base.Awake();
     }
 
     protected override void SetScreenForComputer()

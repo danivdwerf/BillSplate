@@ -11,7 +11,6 @@ public class AboutscreenManager : UIManager
 		singleton = this;
 		
 		this.screenType = ScreenType.ABOUTSCREEN;
-		base.Awake();
 	}
 
 	protected override void OnScreenEnabled()

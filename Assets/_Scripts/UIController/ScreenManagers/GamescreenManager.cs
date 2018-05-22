@@ -34,7 +34,6 @@ public class GamescreenManager : UIManager
         singleton = this;
         
         this.screenType = ScreenType.GAMESCREEN;
-        base.Awake();
     }
 
     protected override void SetScreenForComputer()

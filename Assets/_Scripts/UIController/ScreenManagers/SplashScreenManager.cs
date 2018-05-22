@@ -19,7 +19,6 @@ public class SplashScreenManager : UIManager
 			Destroy(this);
 		singleton = this;
 		this.screenType = ScreenType.SPLASHSCREEN;
-		base.Awake();
 		this.texture.enabled = false;
 	}
 
