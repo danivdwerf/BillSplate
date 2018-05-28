@@ -28,13 +28,13 @@ public class UIController : MonoBehaviour
 	}
 
 	public void GoToScreen(ScreenType screen)
-	{
+	{		
 		byte newIndex = (byte)screen;
 		int len = this.screens.Length;
 		for(byte i = 0; i < len; i++)
 			this.screens[i].SetActive((i == newIndex));
 
-		if(onScreenChanged != null)
+		if(onScreenChanged != null) 
 			onScreenChanged(screen);
 	}
 

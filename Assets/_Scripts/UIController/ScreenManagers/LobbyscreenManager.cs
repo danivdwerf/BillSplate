@@ -14,14 +14,13 @@ public class LobbyscreenManager : UIManager
     [SerializeField]private Text roomCode;
     [SerializeField]private Button playButton;
     [SerializeField]private Button addAI;
+    [SerializeField]private Button backButtonMaster;
     private List<GameObject> iconHolders;
 
     [Space(10)]
     [Header("Mobile View")]
     [SerializeField]private GameObject clientView;
-    
-    [Space(10)]
-    [SerializeField]private Button backButton;
+    [SerializeField]private Button backButtonClient;
 
     private byte amountOfPlayers;
 
@@ -39,14 +38,19 @@ public class LobbyscreenManager : UIManager
         this.clientView.SetActive(false);
         this.clientView = null;
 
+        this.backButtonClient.gameObject.SetActive(false);
+        this.backButtonClient = null;
+
         this.masterView.SetActive(true);
         this.wheel.gameObject.SetActive(true);
         this.roomCode.gameObject.SetActive(true);
         this.playButton.gameObject.SetActive(false);
-        this.backButton.gameObject.SetActive(true);
+        this.backButtonMaster.gameObject.SetActive(true);
 
         this.iconHolders = new List<GameObject>(Data.MAX_PLAYERS);
         this.CreateIconHolders();
+
+        LavaManager.singleton.SetScreen(LavaManager.LavaScreen.Desktop);
     }
 
     protected override void SetScreenForMobile()
@@ -60,13 +64,18 @@ public class LobbyscreenManager : UIManager
         this.roomCode.gameObject.SetActive(false);
         this.roomCode = null;
 
-        this.backButton.gameObject.SetActive(true);
+        this.backButtonMaster.gameObject.SetActive(false);
+        this.backButtonMaster = null;
+
+        this.backButtonClient.gameObject.SetActive(true);
         
         this.iconPrefab = null;
         this.iconHolders = null;
         this.playButton = null;
 
         this.clientView.SetActive(true);
+
+        LavaManager.singleton.SetScreen(LavaManager.LavaScreen.Mobile);
     }
 
     protected override void OnScreenEnabled()
@@ -74,21 +83,24 @@ public class LobbyscreenManager : UIManager
         if(this.masterView != null)
         {
             this.playButton.onClick.AddListener(this.OnStartButtonClicked);
-            this.backButton.onClick.AddListener(()=>
+            this.backButtonMaster.onClick.AddListener(()=>
             {
                 PhotonNetwork.LeaveRoom();
                 UIController.singleton.GoToScreen(ScreenType.STARTSCREEN);
             });
             this.addAI.onClick.AddListener(Host.singleton.CreateAI);
+            LavaManager.singleton.StartPlaying(this.masterView.transform);
+
         }
 
         if(this.clientView != null)
         {
-            this.backButton.onClick.AddListener(()=>
+            this.backButtonClient.onClick.AddListener(()=>
             {
                 PhotonNetwork.LeaveRoom();
                 UIController.singleton.GoToScreen(ScreenType.JOINSCREEN);
             });
+            LavaManager.singleton.StartPlaying(this.clientView.transform);
         }
         UIController.singleton.ShowLoading(false);
     } 
@@ -162,5 +174,7 @@ public class LobbyscreenManager : UIManager
     {
         if(playButton != null)
             this.playButton.onClick.RemoveAllListeners();
+
+        LavaManager.singleton.Stop();
     }
 }

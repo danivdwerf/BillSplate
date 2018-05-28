@@ -4,8 +4,13 @@ public class LavaBehaviour : MonoBehaviour
 {
 	private float moveSpeed;
 	private float rotateSpeed;
-	private Vector3 resetPos;
-	public Vector3 ResetPos{set{this.resetPos = value;}}
+
+	private float maxX;
+	public float MaxX{set{this.maxX = value;}}
+
+	private float startY;
+	public float StartY{set{this.startY = value;}}
+
 	private bool isReady = false;
 
 	private void OnEnable() 
@@ -13,14 +18,14 @@ public class LavaBehaviour : MonoBehaviour
 		if(!this.isReady)
 			return;
 
-		this.transform.localPosition = this.resetPos;
+		this.transform.localPosition = new Vector3(Random.Range(-this.maxX, this.maxX), this.startY, -1);
+		this.rotateSpeed = Random.Range(-1.5f, 1.5f);
+		this.moveSpeed = Random.Range(0.5f, 1.5f);
 		StartCoroutine("UpdateBlob");
 	}
 
 	private void Awake()
 	{
-		this.moveSpeed = Random.Range(1.0f, 4.0f);
-		this.rotateSpeed = Random.Range(0.5f, 1.5f);
 		this.isReady = true;
 	}
 
@@ -32,8 +37,12 @@ public class LavaBehaviour : MonoBehaviour
 			this.transform.localEulerAngles += new Vector3(0.0f, 0.0f, this.rotateSpeed);
 
 			float yPos = this.transform.localPosition.y;
-			if(yPos >= 275)
-				this.transform.localPosition = this.resetPos;
+			if(yPos > Screen.height)
+			{
+				float x = Random.Range(-this.maxX, this.maxX);
+				this.transform.localPosition = new Vector3(x, this.startY, -1);
+				this.transform.localEulerAngles = new Vector3(0.0f, 0.0f, Random.Range(0, 359));
+			}
 
 			yield return new WaitForEndOfFrame();
 		}

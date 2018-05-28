@@ -19,7 +19,8 @@ public class GamescreenManager : UIManager
     [SerializeField]private Text promptClient;
     [SerializeField]private InputField answerfieldClient;
     [SerializeField]private Button submitClient;
-
+    [SerializeField]private GameObject answerSection;
+    [SerializeField]private GameObject voteSection;
     [SerializeField]private Button[] answersClient;
     [SerializeField]private Text[] answersClientLabel;
     public static System.Action<string> OnSubmitAnswer;
@@ -49,6 +50,12 @@ public class GamescreenManager : UIManager
 
         this.answerfieldClient.gameObject.SetActive(false);
         this.answerfieldClient = null;
+
+        this.answerSection.SetActive(false);
+        this.answerSection = null;
+
+        this.voteSection.SetActive(false);
+        this.voteSection = null;
 
         this.submitClient.gameObject.SetActive(false);
         this.submitClient = null;
@@ -88,16 +95,14 @@ public class GamescreenManager : UIManager
         this.answersMaster = null;
 
         this.clientView.SetActive(true);
-        
         this.clientName.gameObject.SetActive(true);
-
         this.promptClient.gameObject.SetActive(true);
 
         this.answerfieldClient.Clear();
         this.answerfieldClient.gameObject.SetActive(true);
-        
         this.submitClient.gameObject.SetActive(true);
-
+        this.answerSection.SetActive(true);
+        this.voteSection.SetActive(false);
 
         this.SetQuestion("Waiting for a prompt", false);
     }
@@ -227,12 +232,17 @@ public class GamescreenManager : UIManager
 
         this.answersClient[0].onClick.AddListener(()=> RPC.singleton.SendVote(0));
         this.answersClient[1].onClick.AddListener(()=> RPC.singleton.SendVote(1));
+
+        this.answerSection.SetActive(false);
+        this.voteSection.SetActive(true);
     }
 
     private System.Collections.IEnumerator ShowScores()
     {
-        Answer winner = Host.singleton.GetMostVoted();
-        Debug.Log(winner.text + " WINS!");
+        int[] data = Host.singleton.GetVotePercentage();
+        Debug.Log("player 1: " + data[0] + "%");
+        Debug.Log("player 2: " + data[1] + "%");
+        Debug.Log("------------------------------");
         yield return null;
     }
 

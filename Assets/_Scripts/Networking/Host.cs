@@ -71,15 +71,20 @@ public class Host : Photon.PunBehaviour
         this.currentVotables[1] = answer2;
     }
 
-    public Answer GetMostVoted()
+    public int[] GetVotePercentage()
     {
-        Answer answer1 = this.currentVotables[0];
-        Answer answer2 = this.currentVotables[1];
+        int answer1 = this.currentVotables[0].votes;
+        int answer2 = this.currentVotables[1].votes;
+        int total = answer1+answer2;
+        int[] percentages = new int[2];
 
-        if(answer1.votes > answer2.votes)
-            return answer1;
-        else
-            return answer2;
+        int per1 = answer1*100/total;
+        int per2 = 100-per1;
+
+        percentages[0] = per1;
+        percentages[1] = per2;
+
+        return percentages;
     }
 
     public void ReceiveAnswers(string[] answertext, int playerID)
