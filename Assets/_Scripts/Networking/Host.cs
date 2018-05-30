@@ -28,6 +28,7 @@ public class Host : Photon.PunBehaviour
 	public static Host singleton;
 
 	private int currentRound;
+    public int CurrentRound{get{return this.currentRound;}}
     private Answer[] currentVotables;
     private Question[] currentPrompts;
     private Dictionary<int, int> scores;

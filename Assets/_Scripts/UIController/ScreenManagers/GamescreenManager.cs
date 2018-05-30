@@ -25,6 +25,10 @@ public class GamescreenManager : UIManager
     [SerializeField]private Text[] answersClientLabel;
     public static System.Action<string> OnSubmitAnswer;
 
+    [Space(10)]
+    [SerializeField]private Text score1;
+    [SerializeField]private Text score2;
+
     private int currentPromptIndex;
     public int CurrentPromptIndex{get{return this.currentPromptIndex;}}
     
@@ -73,6 +77,9 @@ public class GamescreenManager : UIManager
 
         this.answersMaster[0].gameObject.SetActive(false);
         this.answersMaster[1].gameObject.SetActive(false);
+
+        this.answersMaster[0].transform.parent.gameObject.SetActive(false);
+        this.answersMaster[1].transform.parent.gameObject.SetActive(false);
     }
 
     protected override void SetScreenForMobile()
@@ -109,13 +116,16 @@ public class GamescreenManager : UIManager
 
     protected override void OnScreenEnabled()
     {
+        this.score1.text = string.Empty;
+        this.score2.text = string.Empty;
+
         if(this.clientView != null)
         {
             this.clientName.text = JoinscreenManager.singleton.Name;
             submitClient.onClick.AddListener(()=> this.OnSubmit());
         }
 
-        if(masterView!= null)
+        if(this.masterView != null)
         {
             Host.singleton.UpdateRound(0);
         }
@@ -135,7 +145,7 @@ public class GamescreenManager : UIManager
 
     private System.Collections.IEnumerator WaitForAnswers()
     {
-        float waitTime = 60.0f;
+        float waitTime = 90.0f;
         float timer = waitTime;
         this.timer.gameObject.SetActive(true);
         this.feedbackMaster.text = "Answer the prompts on you phone.";
@@ -154,6 +164,8 @@ public class GamescreenManager : UIManager
         this.feedbackMaster.text = "Vote for your favourite answer on your phone:";
         this.answersMaster[0].gameObject.SetActive(true);
         this.answersMaster[1].gameObject.SetActive(true);
+        this.answersMaster[0].transform.parent.gameObject.SetActive(true);
+        this.answersMaster[1].transform.parent.gameObject.SetActive(true);
         StartCoroutine(Vote(data, null));
     }
 
@@ -200,7 +212,7 @@ public class GamescreenManager : UIManager
             RPC.singleton.CallVote(prompt, answer1Text, answer2Text);
 
             timer = waitTime;
-            while(timer > 0.0f)
+            while(timer >= 0.0f)
             {
                 this.timer.text = Mathf.Round(timer).ToString("00");
                 yield return new WaitForSeconds(1.0f);
@@ -212,6 +224,9 @@ public class GamescreenManager : UIManager
         
         this.timer.gameObject.SetActive(false);
         this.feedbackMaster.text = string.Empty;
+        
+        this.answersMaster[0].transform.parent.gameObject.SetActive(false);
+        this.answersMaster[1].transform.parent.gameObject.SetActive(false);
 
         if(callback != null)
             callback();
@@ -230,8 +245,18 @@ public class GamescreenManager : UIManager
         this.answersClient[0].onClick.RemoveAllListeners();
         this.answersClient[1].onClick.RemoveAllListeners();
 
-        this.answersClient[0].onClick.AddListener(()=> RPC.singleton.SendVote(0));
-        this.answersClient[1].onClick.AddListener(()=> RPC.singleton.SendVote(1));
+        this.answersClient[0].onClick.AddListener(()=>
+        {
+            RPC.singleton.SendVote(0);
+            this.answersClient[0].gameObject.SetActive(false);
+        });
+
+        this.answersClient[1].onClick.AddListener(()=> 
+        
+        {
+            RPC.singleton.SendVote(1);
+            this.answersClient[1].gameObject.SetActive(false);
+        });
 
         this.answerSection.SetActive(false);
         this.voteSection.SetActive(true);
@@ -240,9 +265,22 @@ public class GamescreenManager : UIManager
     private System.Collections.IEnumerator ShowScores()
     {
         int[] data = Host.singleton.GetVotePercentage();
-        Debug.Log("player 1: " + data[0] + "%");
-        Debug.Log("player 2: " + data[1] + "%");
-        Debug.Log("------------------------------");
+        this.score1.text = data[0]+"%";
+        this.score2.text = data[1]+"%";
+
+        yield return new WaitForSeconds(2.0f);
+
+        int maxScore = Data.ROUNDS_DATA.rounds[Host.singleton.CurrentRound].maxScore;
+        int score1 = (int)Mathf.Round(data[0] * maxScore/100);
+        int score2 = maxScore-score1;
+        this.score1.text =  score1.ToString();
+        this.score2.text = score2.ToString();
+
+        yield return new WaitForSeconds(3.0f);
+
+        this.score1.text = string.Empty;
+        this.score2.text = string.Empty;
+
         yield return null;
     }
 
