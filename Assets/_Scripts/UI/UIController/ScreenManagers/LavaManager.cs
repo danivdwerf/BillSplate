@@ -40,8 +40,8 @@ public class LavaManager : MonoBehaviour
 	public void SetScreen(LavaScreen screenType)
 	{
 		this.type = screenType;
-		this.maxX = ((screenType&LavaScreen.Desktop) != 0) ? 640 : 320;
-		this.startY = ((screenType&LavaScreen.Desktop) != 0) ? -575 : -2045;
+		this.maxX = ((screenType&LavaScreen.Desktop) != 0) ? 640 : 450;
+		this.startY = ((screenType&LavaScreen.Desktop) != 0) ? -575 : -700;
 	}
 
 	public void StartPlaying(Transform screen)
@@ -65,7 +65,7 @@ public class LavaManager : MonoBehaviour
 		}
 
 		this.bottom.transform.SetParent(screen);
-		this.bottom.transform.localPosition = ((this.type&LavaScreen.Desktop) != 0) ? new Vector3(0, -240, -1) : new Vector3(0, -800, -1);
+		this.bottom.transform.localPosition = ((this.type&LavaScreen.Desktop) != 0) ? new Vector3(0, -240, -1) : new Vector3(0, -470, -1);
 		this.bottom.SetActive(true);
 	}
 

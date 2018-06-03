@@ -11,6 +11,8 @@ public class LavaBehaviour : MonoBehaviour
 	private float startY;
 	public float StartY{set{this.startY = value;}}
 
+	private int maxY;
+
 	private bool isReady = false;
 
 	private void OnEnable() 
@@ -27,6 +29,7 @@ public class LavaBehaviour : MonoBehaviour
 	private void Awake()
 	{
 		this.isReady = true;
+		this.maxY = Screen.height+400;
 	}
 
 	private System.Collections.IEnumerator UpdateBlob()
@@ -37,7 +40,7 @@ public class LavaBehaviour : MonoBehaviour
 			this.transform.localEulerAngles += new Vector3(0.0f, 0.0f, this.rotateSpeed);
 
 			float yPos = this.transform.localPosition.y;
-			if(yPos > Screen.height)
+			if(yPos > this.maxY)
 			{
 				float x = Random.Range(-this.maxX, this.maxX);
 				this.transform.localPosition = new Vector3(x, this.startY, -1);

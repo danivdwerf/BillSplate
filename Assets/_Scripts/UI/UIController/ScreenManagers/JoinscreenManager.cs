@@ -10,6 +10,7 @@ public class JoinscreenManager : UIManager
     [SerializeField]private InputField usernameField;
     [SerializeField]private InputField roomcodeField;
     [SerializeField]private Button joinButton;
+    [SerializeField]private Button backButton;
     [SerializeField]private Text feedback;
 
     public string Name{get{return this.usernameField.text;}}
@@ -25,8 +26,9 @@ public class JoinscreenManager : UIManager
 
     protected override void OnScreenEnabled()
     {
-        joinButton.onClick.AddListener(()=>this.OnJoinRoom());
+        joinButton.onClick.AddListener(() => this.OnJoinRoom());
         feedback.text = string.Empty;
+        backButton.onClick.AddListener(() => UIController.singleton.GoToScreen(ScreenType.STARTSCREEN));
     }
 
     private void OnJoinRoom()
@@ -95,5 +97,6 @@ public class JoinscreenManager : UIManager
     protected override void OnScreenDisabled()
     {
         joinButton.onClick.RemoveAllListeners();
+        backButton.onClick.RemoveAllListeners();
     }
 }

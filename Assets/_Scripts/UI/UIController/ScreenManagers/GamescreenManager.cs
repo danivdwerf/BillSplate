@@ -28,9 +28,6 @@ public class GamescreenManager : UIManager
     [Space(10)]
     [SerializeField]private Text score1;
     [SerializeField]private Text score2;
-
-    private int currentPromptIndex;
-    public int CurrentPromptIndex{get{return this.currentPromptIndex;}}
     
     protected override void Awake()
     {
@@ -249,12 +246,14 @@ public class GamescreenManager : UIManager
         {
             RPC.singleton.SendVote(0);
             this.answersClient[0].gameObject.SetActive(false);
+            this.answersClient[1].gameObject.SetActive(false);
         });
 
         this.answersClient[1].onClick.AddListener(()=> 
         
         {
             RPC.singleton.SendVote(1);
+            this.answersClient[0].gameObject.SetActive(false);
             this.answersClient[1].gameObject.SetActive(false);
         });
 
